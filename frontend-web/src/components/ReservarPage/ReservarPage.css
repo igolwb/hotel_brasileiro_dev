@@ -1,0 +1,491 @@
+/* ReservationPage.css */
+.reservation-container {
+    max-width: 1200px; /* Increased max-width slightly */
+    margin: 40px auto;
+    font-family: 'Arial', sans-serif; /* Consider using the same font as homepage */
+    color: #333; /* Darker text color */
+    background-color: #fff; /* Lighter background for contrast */
+    padding: 30px;
+
+  }
+  
+  .reservation-steps {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px; /* Increased gap */
+  }
+  
+  .step {
+    background: #fff;
+    border-radius: 12px;
+    flex: 1;
+    padding: 25px; /* Increased padding */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .step-number {
+    background-color: #005a87;
+    color: white;
+    font-weight: bold;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 15px; /* Increased margin */
+    user-select: none;
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+  
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow content to fill space */
+  }
+  
+  .step-content h2 {
+    font-size: 22px; /* Slightly larger */
+    font-weight: 700;
+    margin-bottom: 15px; /* Increased margin */
+    color: #005a87; /* Title color */
+  }
+  
+  .step-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px; /* Increased margin */
+    color: #333;
+  }
+  
+  /* Step 1 Styles */
+  .date-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Increased gap */
+  }
+  
+  .date-field label {
+    font-weight: 600;
+    margin-bottom: 6px; /* Increased margin */
+    display: block;
+    font-size: 14px; /* Consistent font size */
+    color: #555;
+  }
+  
+  .date-field input[type="date"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d3dce6;
+    border-radius: 8px;
+    background-color: #f0f6f9; /* Light input background */
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box; /* Include padding in width */
+  }
+  
+  .guest-counter {
+    margin-top: 25px; /* Increased margin */
+  }
+  
+  .guest-counter h3 {
+    font-weight: 600; /* Adjusted weight */
+    margin-bottom: 8px;
+    font-size: 16px; /* Consistent size */
+  }
+  
+  .guest-counter select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d3dce6;
+    background-color: #f0f6f9;
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+  }
+  
+  .room-carda {
+    background: #fff;
+    border-radius: 18px; /* From homepage */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Adjusted shadow slightly */
+    overflow: hidden;
+    display: flex; /* Keep flex */
+    flex-direction: column; /* Vertical layout */
+    align-items: stretch; /* Stretch items */
+    height: fit-content; /* Fit content height */
+    flex-grow: 1;
+  }
+  
+  .room-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover; /* From homepage */
+  }
+  
+  .room-infoa {
+    padding: 1.2rem; /* From homepage */
+    text-align: left; /* From homepage */
+    flex: 1; /* Allow info to take remaining space */
+    display: flex; /* From homepage */
+    flex-direction: column; /* From homepage */
+  }
+  
+  .room-info h3 {
+    font-size: 1.2rem; /* From homepage */
+    margin-bottom: 0.5rem; /* From homepage */
+    font-weight: 700; /* Keep consistency */
+    color: #005a87; /* Match theme */
+  }
+  
+  .room-info p {
+    font-size: 1rem; /* From homepage */
+    margin-bottom: 1rem; /* Adjusted margin */
+    color: #555; /* Consistent text color */
+    line-height: 1.5; /* Improved readability */
+  }
+  
+  .room-info ul {
+    font-size: 0.95rem; /* From homepage */
+    margin-bottom: 1rem; /* From homepage */
+    padding-left: 1.2rem; /* From homepage */
+    list-style-type: disc; /* Explicitly set list style */
+    color: #666;
+  }
+  
+  .room-info ul li {
+    margin-bottom: 6px; /* Increased spacing */
+  }
+
+  .checkout-summary h3 {
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333; /* Consistent color */
+  }
+  
+  .dates-summary {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  .dates-summary p {
+      margin-bottom: 5px;
+  }
+  
+  
+  .experience-added h4 {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 15px; /* Slightly larger */
+    color: #005a87; /* Theme color */
+  }
+  
+  .experience-added p {
+    font-size: 14px;
+    margin: 0 0 15px 0; /* Increased margin */
+    color: #444;
+  }
+  
+  .price-total {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+  }
+  
+  .price-total h3 {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+    text-transform: uppercase; /* Style */
+    color: #555;
+  }
+  
+  .price-total h2 {
+    font-weight: 800; /* Slightly less bold */
+    font-size: 24px; /* Larger total price */
+    color: #005a87;
+    margin: 0 0 20px 0; /* Increased margin */
+  }
+  
+  .payment-section h3 {
+    font-weight: 700;
+    font-size: 17px; /* Slightly larger */
+    margin-bottom: 10px; /* Increased margin */
+  }
+  
+  .payment-section p {
+    font-size: 14px;
+    margin-bottom: 12px; /* Increased margin */
+    color: #444;
+  }
+  
+  .pix-key h4 {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 5px; /* Increased margin */
+    color: #555;
+  }
+  
+  .pix-key code {
+    background-color: #e9ecef; /* Slightly different background */
+    padding: 8px 12px; /* More padding */
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px; /* Slightly larger code */
+    user-select: all;
+    display: inline-block;
+    margin-bottom: 20px; /* Increased margin */
+    color: #333;
+    border: 1px solid #d3dce6; /* Added border */
+  }
+  
+  .confirm-button {
+    background-color: #005a87;
+    color: white;
+    border: none;
+    padding: 14px 28px; /* Larger button */
+    border-radius: 8px; /* Adjusted radius */
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease; /* Added transform transition */
+    width: 100%;
+    text-transform: uppercase; /* Style */
+    letter-spacing: 0.5px; /* Style */
+  }
+  
+  .confirm-button:hover {
+    background-color: #004466; /* Darker hover */
+  }
+  .confirm-button:active {
+      transform: scale(0.98); /* Click effect */
+  }
+  
+  
+  .loading {
+    font-size: 18px;
+    text-align: center;
+    padding: 60px; /* More padding */
+    color: #666;
+    font-weight: 500;
+  }
+
+  /* ===== MOBILE FIRST (TELAS PEQUENAS) ===== */
+@media (max-width: 767px) {
+  /* Container Principal */
+  .reservation-container {
+    padding: 20px; /* Reduzindo o padding */
+    margin: 20px auto;
+    max-width: 100%; /* Garante que o container ocupe toda a largura da tela */
+  }
+
+  /* Ajuste para os passos da reserva */
+  .reservation-steps {
+    flex-direction: column;
+    gap: 20px; /* Menor espaçamento entre os passos */
+  }
+
+  /* Estilo dos passos */
+  .step {
+    padding: 20px; /* Reduzindo o padding */
+  }
+
+  /* Ajustando a largura do número da etapa */
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  /* Ajustes na seção de conteúdo do passo */
+  .step-content h2 {
+    font-size: 18px; /* Menor título */
+  }
+  
+  .step-content h3 {
+    font-size: 16px; /* Menor subtítulo */
+  }
+
+  /* Ajustes nos campos de data */
+  .date-field label {
+    font-size: 12px; /* Fonte menor */
+  }
+
+  .date-field input[type="date"] {
+    padding: 8px 10px; /* Menor padding */
+    font-size: 12px;
+  }
+
+  /* Ajustes no contador de hóspedes */
+  .guest-counter h3 {
+    font-size: 14px; /* Fonte menor */
+  }
+
+  .guest-counter select {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  /* Ajustes nos cartões de quarto */
+  .room-card {
+    flex-direction: column; /* Layout em coluna */
+    gap: 10px; /* Menor espaço entre os itens */
+  }
+
+  .room-image {
+    height: 150px; /* Reduzindo a altura da imagem */
+  }
+
+  .room-info h3 {
+    font-size: 1rem; /* Fonte menor para o título */
+  }
+
+  .room-info p {
+    font-size: 0.9rem; /* Fonte menor para os parágrafos */
+  }
+
+  .room-info ul {
+    font-size: 0.85rem; /* Fonte menor para os itens de lista */
+  }
+
+  /* Ajustes na seção de resumo de checkout */
+  .checkout-summary h3 {
+    font-size: 16px; /* Tamanho menor do título */
+  }
+
+  .dates-summary p {
+    font-size: 12px; /* Fonte menor */
+  }
+
+  .experience-added h4 {
+    font-size: 14px; /* Fonte menor para o subtítulo */
+  }
+
+  .experience-added p {
+    font-size: 12px;
+  }
+
+  .price-total h3 {
+    font-size: 14px; /* Fonte menor para o título */
+  }
+
+  .price-total h2 {
+    font-size: 18px; /* Fonte menor para o valor total */
+  }
+
+  /* Ajustes na seção de pagamento */
+  .payment-section h3 {
+    font-size: 15px; /* Fonte menor para o título */
+  }
+
+  .payment-section p {
+    font-size: 12px; /* Fonte menor para o parágrafo */
+  }
+
+  .pix-key h4 {
+    font-size: 12px; /* Fonte menor */
+  }
+
+  .pix-key code {
+    font-size: 12px; /* Fonte menor */
+  }
+
+  /* Ajustes no botão de confirmação */
+  .confirm-button {
+    padding: 12px 24px; /* Menor padding */
+    font-size: 14px; /* Fonte menor */
+  }
+
+  /* Ajustes no estado de loading */
+  .loading {
+    font-size: 16px; /* Fonte menor */
+    padding: 40px; /* Menos padding */
+  }
+}
+
+/* ===== TABLETS (TELAS INTERMEDIÁRIAS) ===== */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .reservation-container {
+    padding: 25px;
+  }
+
+  .reservation-steps {
+    gap: 25px; /* Menor espaçamento entre os passos */
+  }
+
+  .step {
+    padding: 20px;
+  }
+
+  .step-number {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .step-content h2 {
+    font-size: 20px; /* Tamanho do título ajustado */
+  }
+
+  .step-content h3 {
+    font-size: 17px;
+  }
+
+  .date-field input[type="date"] {
+    padding: 10px 12px; /* Aumento leve no padding */
+  }
+
+  .guest-counter select {
+    padding: 10px 12px;
+  }
+
+  .room-card {
+    gap: 15px;
+  }
+
+  .room-image {
+    height: 170px; /* Ajustando a altura das imagens */
+  }
+
+  .room-info h3 {
+    font-size: 1.1rem;
+  }
+
+  .room-info p {
+    font-size: 0.95rem;
+  }
+
+  .checkout-summary h3 {
+    font-size: 17px;
+  }
+
+  .price-total h3 {
+    font-size: 15px;
+  }
+
+  .price-total h2 {
+    font-size: 22px;
+  }
+
+  .payment-section h3 {
+    font-size: 16px;
+  }
+
+  .pix-key code {
+    font-size: 13px;
+  }
+
+  .confirm-button {
+    padding: 13px 26px;
+    font-size: 15px;
+  }
+}
+  
+ 

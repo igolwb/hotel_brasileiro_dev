@@ -1,0 +1,184 @@
+/* ===== MOBILE FIRST (TELAS PEQUENAS) ===== */
+body {
+  margin: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: #fff;
+  overflow-x: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* HEADER COMPACTO MOBILE */
+.left-panel {
+  background: #0f2a3e;
+  height: 40px; /* altura reduzida para header compacto */
+  padding: 0; /* padding zero */
+  display: flex;
+  justify-content: center; /* centraliza logo */
+  align-items: center;
+  clip-path: none; /* remove triângulo */
+  overflow: hidden;
+}
+
+.logo-title-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.logo-img-login {
+  max-width: 32px; /* logo menor no mobile */
+  max-height: 32px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Esconde todas as frases no mobile */
+.left-panel h1,
+.left-panel h2,
+.left-panel p {
+  display: none;
+}
+
+/* Painel direito com formulário */
+.right-panel {
+  flex: 1;
+  padding: 16px 12px;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-form h2 {
+  font-size: 1.3rem;
+  margin: 8px 0 12px 0;
+  text-align: center;
+  color: #0f2a3e;
+}
+
+.login-form label {
+  font-size: 0.85rem;
+}
+
+.login-form input {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.login-form button {
+  padding: 8px;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 0.75rem;
+}
+
+.back-home {
+  font-size: 0.8rem;
+  gap: 6px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.home-icon {
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+}
+
+/* ===== DESKTOP (TELAS MAIORES) ===== */
+@media (min-width: 769px) {
+  .container {
+    flex-direction: row;
+    height: 100vh;
+  }
+
+  .left-panel {
+    flex: 1;
+    padding: 60px;
+    clip-path: polygon(0 0, 100% 0, 0 100%); /* triângulo visível */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background: #0f2a3e;
+    overflow: visible;
+    height: auto;
+  }
+
+  .logo-title-row {
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .logo-img-login {
+    max-width: 100px; /* logo moderada no desktop */
+    max-height: 100px;
+    width: auto;
+    height: auto;
+  }
+
+  /* Frases visíveis dentro do triângulo */
+  .left-panel h1,
+  .left-panel h2,
+  .left-panel p {
+    display: block;
+    color: white;
+    margin: 0 0 12px 0;
+  }
+
+  .left-panel h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .left-panel h2 {
+    font-size: 1.8rem;
+  }
+
+  .left-panel p {
+    font-size: 1.1rem;
+    max-width: 320px;
+  }
+
+  .right-panel {
+    flex: 1;
+    padding: 40px 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-form {
+    max-width: 400px;
+    gap: 16px;
+  }
+
+  .login-form h2 {
+    font-size: 2rem;
+  }
+
+  .login-form button {
+    cursor: pointer;
+  }
+}
