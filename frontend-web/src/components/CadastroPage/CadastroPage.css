@@ -161,6 +161,7 @@ body {
   }
 
   .right-panel {
+    max-height: 100vh; /* Permite que o painel direito ocupe toda a altura */
     flex: 1;
     padding: 40px 60px;
     display: flex;
