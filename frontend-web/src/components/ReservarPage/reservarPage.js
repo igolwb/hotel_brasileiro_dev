@@ -97,8 +97,15 @@ const ReservaPage = () => {
       });
 
       if (res.ok) {
-        alert('Reserva criada com sucesso!');
-        navigate('/minhas-reservas');
+        // Salva os dados do quarto e da reserva no localStorage para a SuccessPage
+        localStorage.setItem('successRoom', JSON.stringify({
+          ...selectedRoom,
+          checkInDate,
+          checkOutDate,
+          guests,
+          preco: total.toFixed(2)
+        }));
+        navigate('/reserva/concluida');
       } else {
         const err = await res.json();
         alert(err.error || 'Erro ao criar reserva');

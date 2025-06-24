@@ -11,6 +11,7 @@ import AdminReservas from '../components/AdminPages/ReservasPage/reservasPage.js
 import EditarReserva from '../components/AdminPages/EditarReserva/editReserva.js';
 import AddReserva from '../components/AdminPages/EditarReserva/addReserva.js';
 import MinhasReservas from '../components/MenuUser/menuUser.js';
+import SuccessPage from '../components/ReservaConcluida/successPage.js';
 
 
 function AppRoutes() {
@@ -20,12 +21,12 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/cadastro" element={<CadastroPage />} />
       <Route path="/reserva/:roomId" element={<ReservaPage />} />
+      <Route path="/reserva/concluida" element={<SuccessPage />} />
       <Route path="/minhas-reservas" element={<MinhasReservas />} />
 
       {/* Rotas de Admin */}
       
       <Route path="/admin/clientes" element={<Clientes />} />
-
       <Route path="/admin/quartos" element={<Quartos />} />
       <Route path="/admin/quartos/:id" element={<EditarQuarto />} />
       <Route path="/admin/quartos/addQuarto" element={<AddQuarto />} />

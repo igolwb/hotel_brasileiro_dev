@@ -20,8 +20,10 @@ function MinhasReservas() {
   const [editTelefone, setEditTelefone] = useState(authUser?.telefone || '');
   const [editSenha, setEditSenha] = useState('');
   const [userId, setUserId] = useState(null);
+  const [userNome, setUserNome] = useState('');
 
   useEffect(() => {
+    // Buscar reservas
     fetch('http://localhost:3000/api/reservas/minhas-reservas', {
       headers: {
         Authorization: authHeader
@@ -29,7 +31,31 @@ function MinhasReservas() {
     })
       .then(res => res.json())
       .then(data => setReservas(data));
-  }, [authHeader]);
+
+    // Buscar nome atualizado do usuário autenticado
+    fetch('http://localhost:3000/api/clientes/me', {
+      headers: {
+        Authorization: authHeader
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success && data.data && data.data.nome) {
+          setUserNome(data.data.nome);
+        } else if (authUser && authUser.nome) {
+          setUserNome(authUser.nome);
+        } else {
+          setUserNome('Usuário');
+        }
+      })
+      .catch(() => {
+        if (authUser && authUser.nome) {
+          setUserNome(authUser.nome);
+        } else {
+          setUserNome('Usuário');
+        }
+      });
+  }, [authHeader, authUser]);
 
   function handleLogout() {
     signOut();
@@ -127,7 +153,7 @@ function MinhasReservas() {
     <div className="minhas-reservas-container">
       <img src={user} className="minhas-reservas-avatar" alt="Usuário" />
       <h1 className="minhas-reservas-nome">
-        Olá, {authUser && authUser.nome ? authUser.nome : 'Usuário'}
+        Olá, {userNome}
       </h1>
       <h2 className="minhas-reservas-titulo">Suas reservas</h2>
 

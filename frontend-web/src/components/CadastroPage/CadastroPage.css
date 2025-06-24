@@ -48,8 +48,9 @@ body {
 
 /* Painel direito com formulário */
 .right-panel {
+  max-height: fit-content;
   flex: 1;
-  padding: 16px 12px;
+  padding: 36px 12px;
 }
 
 .login-form {
@@ -134,8 +135,6 @@ body {
   .logo-img-login {
     max-width: 100px; /* logo moderada no desktop */
     max-height: 100px;
-    width: auto;
-    height: auto;
   }
 
   /* Frases visíveis dentro do triângulo */
@@ -180,5 +179,26 @@ body {
 
   .login-form button {
     cursor: pointer;
+  }
+}
+
+/* Media query para dispositivos móveis */
+@media (max-width: 770px) {
+  .left-panel {
+    max-height: 60px; /* Define uma altura mínima */
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    clip-path: none;
+    overflow: hidden;
+  }
+
+  .logo-img-login {
+    max-width: 32px;
+    max-height: 32px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 }

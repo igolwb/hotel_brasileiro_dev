@@ -1,6 +1,5 @@
 import './Footer.css';
 import logo from '../../assets/logo.svg';
-import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -11,7 +10,6 @@ const Footer = () => {
           <h2>Fale Conosco</h2>
           <p>📍 R. Bento Branco de Andrade Filho, 379 - Santo Amaro</p>
           <p>✉️ contato.hotel.brasileiro@gmail.com</p>
-          <Link to="/" className="footer-button">Voltar para o início</Link>
         </div>
 
         {/* Parte direita */}
