@@ -43,13 +43,13 @@ const SuccessPage = ({ selectedRoom }) => {
     >
       <h1 className="success-title">Quarto reservado com sucesso</h1>
       <div className="success-content">
-        <div className="room-carda">
+        <div className="room-cardb">
           <img
             src={imagem}
             alt={nome}
             className="room-image"
           />
-          <div className="room-infoa">
+          <div className="room-infob">
             <h3>{nome}</h3>
             <p className="room-desc">{descricao}</p>
             {caracteristicas.length > 0 && (

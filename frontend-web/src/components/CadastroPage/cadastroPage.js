@@ -34,16 +34,46 @@ function CadastroPage() {
   // Estado para mensagens de erro e sucesso
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  // Estado para mostrar requisitos da senha após submit
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+
+  // Regex para validação de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Regex para validação de telefone (apenas números)
+  const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+  // Requisitos de senha
+  const passwordRequirements = [
+    { label: 'Mínimo 8 caracteres', test: (s) => s.length >= 8 },
+    { label: 'Ao menos uma letra maiúscula', test: (s) => /[A-Z]/.test(s) },
+    { label: 'Ao menos uma letra minúscula', test: (s) => /[a-z]/.test(s) },
+    { label: 'Ao menos um número', test: (s) => /[0-9]/.test(s) },
+    { label: 'Ao menos um caractere especial', test: (s) => /[^A-Za-z0-9]/.test(s) }
+  ];
+
+  // Formata o telefone enquanto digita
+  const formatPhone = (value) => {
+    // Remove tudo que não é número
+    const digits = value.replace(/\D/g, '');
+    if (digits.length <= 2) return `(${digits}`;
+    if (digits.length <= 7) return `(${digits.slice(0,2)}) ${digits.slice(2)}`;
+    if (digits.length <= 11) return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
+    return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
+  };
 
   // Atualiza o estado do formulário ao digitar nos campos
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let newValue = value;
+    if (name === 'telefone') {
+      newValue = formatPhone(value);
+    }
     setForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: newValue
     }));
     setError('');
     setSuccess('');
+    setShowPasswordRequirements(false);
   };
 
   // Envia o formulário para criar um novo cliente
@@ -51,15 +81,61 @@ function CadastroPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setShowPasswordRequirements(false);
+    // Validação dos campos
     if (!form.nome || !form.email || !form.telefone || !form.senha) {
       setError('Por favor, preencha todos os campos.');
       return;
     }
+    if (!emailRegex.test(form.email)) {
+      setError('Email inválido.');
+      return;
+    }
+    if (!phoneRegex.test(form.telefone)) {
+      setError('Telefone inválido. Use o formato (XX) XXXXX-XXXX.');
+      return;
+    }
+    const failedReqs = passwordRequirements.filter(r => !r.test(form.senha));
+    if (failedReqs.length > 0) {
+      setError('Senha inválida. Veja os requisitos abaixo.');
+      setShowPasswordRequirements(true);
+      return;
+    }
     try {
-      await createCliente(form);
-      setSuccess('Cadastro realizado com sucesso!');
-      setTimeout(() => navigate('/'), 1500);
+      const response = await createCliente(form);
+      // Se o backend retornar sucesso, mostra mensagem e redireciona
+      if (response && response.success) {
+        setSuccess('Cadastro realizado com sucesso!');
+        setTimeout(() => navigate('/'), 1500);
+      } else if (response && response.message) {
+        // Se o backend retornar erro de email ou telefone duplicado
+        if (response.message.includes('Email já cadastrado')) {
+          setError('Este email já está cadastrado.');
+          return;
+        }
+        if (response.message.includes('Telefone já cadastrado')) {
+          setError('Este telefone já está cadastrado.');
+          return;
+        }
+        setError(response.message);
+        return;
+      } else {
+        setError('Erro ao cadastrar. Tente novamente.');
+      }
     } catch (err) {
+      // Verifica se o erro é de email ou telefone duplicado
+      if (err && err.response && err.response.data && err.response.data.message) {
+        if (err.response.data.message.includes('Email já cadastrado')) {
+          setError('Este email já está cadastrado.');
+          return;
+        }
+        if (err.response.data.message.includes('Telefone já cadastrado')) {
+          setError('Este telefone já está cadastrado.');
+          return;
+        }
+        setError(err.response.data.message);
+        return;
+      }
       setError('Erro ao cadastrar. Tente novamente.');
     }
   };
@@ -120,7 +196,8 @@ function CadastroPage() {
               placeholder: 'Digite seu email',
               value: form.email,
               onChange: handleChange,
-              autoComplete: 'off'
+              autoComplete: 'off',
+              style: emailRegex.test(form.email) || !form.email ? {} : { borderColor: 'red' }
             }),
             React.createElement('label', null, 'Telefone'),
             React.createElement('input', {
@@ -130,7 +207,9 @@ function CadastroPage() {
               placeholder: 'Digite seu telefone',
               value: form.telefone,
               onChange: handleChange,
-              autoComplete: 'off'
+              autoComplete: 'off',
+              maxLength: 15,
+              style: phoneRegex.test(form.telefone) || !form.telefone ? {} : { borderColor: 'red' }
             }),
             React.createElement('label', null, 'Senha'),
             React.createElement('input', {
@@ -139,8 +218,17 @@ function CadastroPage() {
               placeholder: 'Digite sua senha',
               value: form.senha,
               onChange: handleChange,
-              autoComplete: 'off'
+              autoComplete: 'off',
+              style: passwordRequirements.every(r => r.test(form.senha)) || !form.senha ? {} : { borderColor: 'red' }
             }),
+            // Lista de requisitos da senha só após submit
+            showPasswordRequirements && form.senha && passwordRequirements.some(r => !r.test(form.senha)) && React.createElement(
+              'ul',
+              { style: { color: 'red', margin: '8px 0', fontSize: '0.95em', paddingLeft: '20px' } },
+              passwordRequirements.map((r, idx) =>
+                React.createElement('li', { key: idx, style: { opacity: r.test(form.senha) ? 0.5 : 1 } }, r.label)
+              )
+            ),
             React.createElement(
               Link,
               { className: 'hint', to: '/login', onClick: () => navigate('/login') },

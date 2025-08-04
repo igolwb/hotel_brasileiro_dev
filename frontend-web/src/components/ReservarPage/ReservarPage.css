@@ -334,8 +334,14 @@
   }
 
   /* Ajustes nos cartões de quarto */
-  .room-card {
+  .room-carda {
+    min-width: 90%;
     flex-direction: column; /* Layout em coluna */
+        /* === NOVO: Centralização mobile === */
+    align-items: center;
+    text-align: center;
+    margin: 0 auto; /* Centraliza horizontalmente */
+    width: 100%;
     gap: 10px; /* Menor espaço entre os itens */
   }
 
@@ -446,7 +452,7 @@
     padding: 10px 12px;
   }
 
-  .room-card {
+  .room-carda {
     gap: 15px;
   }
 
