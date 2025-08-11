@@ -1,1 +1,12 @@
-quando for fazer um commit não inclua a pasta do node modules, quando for baixar o projeto digite  "npm install" no cmd enquanto estiver na pasta do projeto
+IMPORTANTE: a versão do projeto web n é a versão final e é feita p q n tenha q mudar os dominios toda a hora;
+quando for dar commit, verifique todas as mudanças
+
+1.abre 2 janelas de cmd no vscode ou só uma janela de cmd fora do vscode
+
+2.na primeira janela entra no root do projeto (deve ser a primeira pasta quando vc abre o cmd pelo vscode) e roda o npm install
+
+3.na segunda janela do cmd entra no frontend "cd frontend-web" e roda o npm install
+
+4.enquanto o frontend instala (vai demorar) pega o .env no trello, cria um no arquivo com o exato nome de ".env" no root do projeto e cola o .env inteiro lá
+
+5.qnd tudo estiver pronto roda primeiro o back e dps o front (o back n funciona se o front rodar primeiro)
