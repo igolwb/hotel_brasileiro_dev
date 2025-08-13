@@ -55,6 +55,24 @@ export const buscarClientes = async(req, res) => {
     }
 };
 
+// Busca todas as reservas de um cliente, incluindo o nome do quarto
+export const buscarReservasCliente = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const reservas = await sql`
+      SELECT r.*, q.nome AS quarto_nome
+      FROM reservas r
+      JOIN quartos q ON r.quarto_id = q.id
+      WHERE r.cliente_id = ${id}
+      ORDER BY r.inicio DESC
+    `;
+    res.status(200).json({ success: true, data: reservas });
+  } catch (error) {
+    console.error(`[GET /clientes/${id}/reservas] Erro:`, error);
+    res.status(500).json({ success: false, message: 'Erro interno no servidor' });
+  }
+};
+
 // Busca um cliente específico pelo id fornecido na URL
 export const buscarClienteId = async(req, res) => {
     const { id } = req.params;

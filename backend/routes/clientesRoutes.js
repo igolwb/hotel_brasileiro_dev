@@ -6,7 +6,8 @@ import {
   criarCliente,
   atualizarCliente,
   deletarCliente,
-  buscarClienteMe
+  buscarClienteMe,
+  buscarReservasCliente
 } from '../controllers/clientesController.js';
 
 const router = express.Router();
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get('/', authenticateToken, buscarClientes);
 router.get('/me', authenticateToken, buscarClienteMe);
 router.get('/:id', authenticateToken, buscarClienteId);
+router.get('/:id/reservas', authenticateToken, buscarReservasCliente);
 router.put('/:id', authenticateToken, atualizarCliente);
 router.delete('/:id', authenticateToken, deletarCliente);
 router.post('/', criarCliente);
