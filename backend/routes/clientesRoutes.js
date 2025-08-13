@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticateToken } from '../middlewares/authMiddleware.js';
+import upload from '../config/multerconfig.js';
 import {
   buscarClientes,
   buscarClienteId,
@@ -7,7 +8,8 @@ import {
   atualizarCliente,
   deletarCliente,
   buscarClienteMe,
-  buscarReservasCliente
+  buscarReservasCliente,
+  atualizarFotoPerfil
 } from '../controllers/clientesController.js';
 
 const router = express.Router();
@@ -20,5 +22,6 @@ router.get('/:id/reservas', authenticateToken, buscarReservasCliente);
 router.put('/:id', authenticateToken, atualizarCliente);
 router.delete('/:id', authenticateToken, deletarCliente);
 router.post('/', criarCliente);
+router.put('/:id/ft_perfil', upload.single('ft_perfil'), atualizarFotoPerfil);
 
 export default router;

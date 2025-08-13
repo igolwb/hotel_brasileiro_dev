@@ -78,6 +78,7 @@ app.post('/api/login', async (req, res) => {
 app.use('/api/quartos', quartosRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/reservas', reservasRoutes);
+app.use('/uploads', express.static('uploads'));
 
 // Função para inicializar o banco de dados e criar tabelas se não existirem
 async function startdb() {
@@ -89,7 +90,8 @@ async function startdb() {
         email VARCHAR(255) NOT NULL UNIQUE,
         telefone VARCHAR(255) NOT NULL,
         senha VARCHAR(255) NOT NULL,
-        role VARCHAR(50) DEFAULT 'cliente' :: character varying
+        role VARCHAR(50) DEFAULT 'cliente' :: character varying,
+        ft_perfil varchar(255)
       );
     `;
 
