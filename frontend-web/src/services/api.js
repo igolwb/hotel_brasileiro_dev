@@ -51,9 +51,17 @@ const useApiStore = create((set) => ({
           Authorization: authHeader
         }
       });
-      set((state) => ({ clientes: [...state.clientes, response.data], loading: false }));
+      // Só adiciona se o backend realmente criou (status 201 ou response.data.success)
+      if (response.status === 201 || (response.data && response.data.success)) {
+        set((state) => ({ clientes: [...state.clientes, response.data], loading: false }));
+        return response.data;
+      } else {
+        set({ loading: false });
+        throw new Error(response.data.message || 'Erro ao criar cliente');
+      }
     } catch (error) {
       set({ error: error.message || 'Erro ao criar cliente', loading: false });
+      throw error;
     }
   },
 
@@ -90,6 +98,23 @@ const useApiStore = create((set) => ({
       }));
     } catch (error) {
       set({ error: error.message || 'Erro ao deletar cliente', loading: false });
+    }
+  },
+
+    // Busca reservas de um cliente específico, incluindo nome do quarto
+  fetchReservasCliente: async (clienteId, authHeader) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await axios.get(`${URL}/api/clientes/${clienteId}/reservas`, {
+        headers: {
+          Authorization: authHeader
+        }
+      });
+      set({ reservas: response.data.data, loading: false });
+      return response.data.data;
+    } catch (error) {
+      set({ error: error.message || 'Erro ao buscar reservas do cliente', loading: false });
+      return [];
     }
   },
 
