@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useApiStore from '../../../services/api.js';
 import AdminHeader from '../HeaderAdmin/adminHeader.js';
+import { useNavigate } from 'react-router-dom';
 import useAuthAdmin from '../../../hooks/adminAuth.js';
 import './clientePage.css';
 
@@ -9,6 +10,7 @@ const USERS_PER_PAGE = 10;
 function Clientes() {
   // Hook customizado para autenticação de admin
   const { authUser, authHeader } = useAuthAdmin();
+  const navigate = useNavigate();
   
   // Hooks e métodos da store de API para clientes
   const {
@@ -19,6 +21,8 @@ function Clientes() {
 
   // Estado para controlar a página atual da paginação
   const [currentPage, setCurrentPage] = useState(1);
+  // Estado para busca
+  const [search, setSearch] = useState('');
 
   // Modal de reservas do cliente
   const [showModal, setShowModal] = useState(false);
@@ -48,7 +52,7 @@ function Clientes() {
   }
 
   function handleEditReserva(reserva) {
-    alert('Editar reserva: ' + reserva.id);
+    navigate(`/admin/reservas/${reserva.id}`);
   }
 
     // Função utilitária para formatar datas no formato dd/mm/yyyy
@@ -66,15 +70,21 @@ function Clientes() {
     alert('Excluir reserva: ' + reserva.id);
   }
 
+  // Filtra clientes por busca (ID ou email)
+  const filteredClientes = clientes.filter(cliente =>
+    cliente.email.toLowerCase().includes(search.toLowerCase()) ||
+    cliente.id.toString().includes(search)
+  );
+
   // Calcula o índice do primeiro e último usuário da página atual
   const indexOfLastUser = currentPage * USERS_PER_PAGE;
   const indexOfFirstUser = indexOfLastUser - USERS_PER_PAGE;
 
   // Lista de clientes da página atual
-  const currentUsers = clientes.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = filteredClientes.slice(indexOfFirstUser, indexOfLastUser);
 
   // Calcula o total de páginas para a paginação
-  const totalPages = Math.ceil(clientes.length / USERS_PER_PAGE);
+  const totalPages = Math.ceil(filteredClientes.length / USERS_PER_PAGE);
 
   // Calcula quantas linhas vazias preencher para manter a tabela alinhada
   const linhasVazias = Math.max(0, USERS_PER_PAGE - currentUsers.length);
@@ -84,6 +94,14 @@ function Clientes() {
       <AdminHeader />
       <div className="clientes-container">
         <h1 className="clientes-title">Clientes</h1>
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Buscar por ID ou Email"
+          className="clientes-search-box"
+          style={{ marginBottom: '16px', padding: '8px', width: '100%', maxWidth: '400px' }}
+        />
         <table className="clientes-table">
           <thead>
             <tr>
@@ -159,7 +177,6 @@ function Clientes() {
                         <td>{reserva.preco_total}</td>
                         <td>
                           <button className="edit-reserva-btn" onClick={() => handleEditReserva(reserva)}>Editar</button>
-                          <button className="delete-reserva-btn" onClick={() => handleDeleteReserva(reserva)}>Excluir</button>
                         </td>
                       </tr>
                     ))}

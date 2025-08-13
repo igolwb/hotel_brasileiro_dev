@@ -21,6 +21,8 @@ function MinhasReservas() {
   const [editSenha, setEditSenha] = useState('');
   const [userId, setUserId] = useState(null);
   const [userNome, setUserNome] = useState('');
+  const [profilePicFile, setProfilePicFile] = useState(null);
+  const [profilePicUrl, setProfilePicUrl] = useState(null);
 
   useEffect(() => {
     // Buscar reservas
@@ -32,7 +34,7 @@ function MinhasReservas() {
       .then(res => res.json())
       .then(data => setReservas(data));
 
-    // Buscar nome atualizado do usuário autenticado
+    // Buscar nome e foto do usuário autenticado
     fetch('http://localhost:3000/api/clientes/me', {
       headers: {
         Authorization: authHeader
@@ -40,22 +42,31 @@ function MinhasReservas() {
     })
       .then(res => res.json())
       .then(data => {
-        if (data && data.success && data.data && data.data.nome) {
-          setUserNome(data.data.nome);
-        } else if (authUser && authUser.nome) {
-          setUserNome(authUser.nome);
+        if (data && data.success && data.data) {
+          setUserNome(data.data.nome || 'Usuário');
+          if (data.data.ft_perfil) {
+            setProfilePicUrl(`http://localhost:3000/${data.data.ft_perfil}`);
+          } else {
+            setProfilePicUrl(user);
+          }
         } else {
-          setUserNome('Usuário');
+          setUserNome(authUser?.nome || 'Usuário');
+          setProfilePicUrl(user);
         }
       })
       .catch(() => {
-        if (authUser && authUser.nome) {
-          setUserNome(authUser.nome);
-        } else {
-          setUserNome('Usuário');
-        }
+        setUserNome(authUser?.nome || 'Usuário');
+        setProfilePicUrl(user);
       });
   }, [authHeader, authUser]);
+
+  function handleProfilePicChange(e) {
+    if (e.target.files && e.target.files[0]) {
+      setProfilePicFile(e.target.files[0]);
+      // Preview
+      setProfilePicUrl(URL.createObjectURL(e.target.files[0]));
+    }
+  }
 
   function handleLogout() {
     signOut();
@@ -105,6 +116,18 @@ function MinhasReservas() {
           senha: editSenha
         })
       });
+      // Upload profile picture if selected
+      if (profilePicFile && userId) {
+        const formData = new FormData();
+        formData.append('ft_perfil', profilePicFile);
+        await fetch(`http://localhost:3000/api/clientes/${userId}/ft_perfil`, {
+          method: 'PUT',
+          headers: {
+            Authorization: authHeader
+          },
+          body: formData
+        });
+      }
       if (response.ok) {
         setShowEditModal(false);
         window.location.reload();
@@ -151,7 +174,7 @@ function MinhasReservas() {
 
   return (
     <div className="minhas-reservas-container">
-      <img src={user} className="minhas-reservas-avatar" alt="Usuário" />
+      <img src={profilePicUrl || user} className="minhas-reservas-avatar" alt="Usuário" />
       <h1 className="minhas-reservas-nome">
         Olá, {userNome}
       </h1>
@@ -229,6 +252,10 @@ function MinhasReservas() {
               <div className="minhas-reservas-edit-group">
                 <label>Senha</label>
                 <input type="password" value={editSenha} onChange={e => setEditSenha(e.target.value)} required />
+              </div>
+              <div className="minhas-reservas-edit-group">
+                <label>Foto de Perfil</label>
+                <input type="file" accept="image/*" onChange={handleProfilePicChange} />
               </div>
               <div className="modal-editar-actions">
                 <button type="button" className="btn-cancel" onClick={() => setShowEditModal(false)}>Cancelar</button>

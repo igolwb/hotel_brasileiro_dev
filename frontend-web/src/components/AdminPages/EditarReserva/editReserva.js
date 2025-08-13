@@ -10,8 +10,31 @@ function EditarReserva() {
   const { authUser, authHeader } = useAuthAdmin();
   const { id } = useParams();
   const navigate = useNavigate();
-  // Funções da store para buscar e atualizar reserva
-  const { getReservaById, updateReserva, loading } = useApiStore();
+  // Funções da store para buscar, atualizar e deletar reserva
+  const { getReservaById, updateReserva, deleteReserva, loading } = useApiStore();
+  // Estado para exibir o modal de confirmação de exclusão
+  const [showModal, setShowModal] = useState(false);
+  // Abre o modal de confirmação de exclusão
+  const abrirModal = () => {
+    setShowModal(true);
+  };
+
+  // Fecha o modal de confirmação
+  const fecharModal = () => {
+    setShowModal(false);
+  };
+
+  // Confirma a exclusão da reserva
+  const confirmarExclusao = async () => {
+    try {
+      await deleteReserva(id, authHeader);
+      navigate('/admin/reservas');
+    } catch (error) {
+      console.error('Erro ao excluir reserva:', error);
+      alert('Não foi possível excluir a reserva. Tente novamente.');
+    }
+    fecharModal();
+  };
 
   // Estado do formulário da reserva
   const [form, setForm] = useState({
@@ -128,6 +151,17 @@ function EditarReserva() {
           >
             Cancelar
           </button>
+
+                    <button
+            type="button"
+            className="editar-reserva-excluir"
+            onClick={abrirModal}
+            disabled={loading}
+            style={{ marginLeft: '10px', background: '#d9534f', color: 'white' }}
+          >
+            Excluir Reserva
+          </button>
+          
           <button
             type="submit"
             className="editar-reserva-salvar"
@@ -135,8 +169,21 @@ function EditarReserva() {
           >
             Salvar
           </button>
+
         </div>
       </form>
+      {showModal && (
+        <div className="modal-bg" onClick={fecharModal}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <h2>Confirmar Exclusão</h2>
+            <p>Deseja realmente excluir esta reserva?</p>
+            <div className="modal-actions">
+              <button className="btn-cancel" onClick={fecharModal}>Cancelar</button>
+              <button className="btn-confirm" onClick={confirmarExclusao}>Excluir</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

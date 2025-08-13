@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import AdminHeader from '../HeaderAdmin/adminHeader.js';
 import './reservasPage.css';
 import tabler_edit from '../../../assets/tabler_edit.svg';
-import delete_btn from '../../../assets/delete_btn.svg';
 import useAuthAdmin from '../../../hooks/adminAuth.js';
 
 const RESERVAS_PER_PAGE = 10;
@@ -18,17 +17,11 @@ function AdminReservas() {
     reservas,
     loading,
     fetchReservas,
-    deleteReserva,
   } = useApiStore();
 
   // Estado para controlar a página atual da paginação
   const [currentPage, setCurrentPage] = useState(1);
   
-  // Estado para exibir o modal de confirmação de exclusão
-  const [showModal, setShowModal] = useState(false);
-
-  // Estado para armazenar a reserva selecionada para exclusão
-  const [reservaSelecionada, setReservaSelecionada] = useState(null);
 
   const navigate = useNavigate();
 
@@ -49,25 +42,6 @@ function AdminReservas() {
   // Calcula o total de páginas para a paginação
   const totalPages = Math.ceil(reservas.length / RESERVAS_PER_PAGE);
 
-  // Abre o modal de confirmação de exclusão para a reserva selecionada
-  const abrirModal = (reserva) => {
-    setReservaSelecionada(reserva);
-    setShowModal(true);
-  };
-
-  // Fecha o modal de confirmação
-  const fecharModal = () => {
-    setShowModal(false);
-    setReservaSelecionada(null);
-  };
-
-  // Confirma a exclusão da reserva selecionada
-  const confirmarExclusao = () => {
-    if (reservaSelecionada) {
-      deleteReserva(reservaSelecionada.id);
-      fecharModal();
-    }
-  };
 
   // Calcula quantas linhas vazias preencher para manter a tabela alinhada
   const linhasVazias = Math.max(0, RESERVAS_PER_PAGE - currentReservas.length);
@@ -117,12 +91,7 @@ function AdminReservas() {
                     <td>{formatarData(reserva.fim)}</td>
                     <td>{reserva.preco_total ? `R$ ${Number(reserva.preco_total).toFixed(2)}` : '-'}</td>
                     <td>
-                      <button 
-                        className="btn-trash" 
-                        onClick={() => abrirModal(reserva)}
-                      >
-                        <img src={delete_btn} alt="Excluir" style={{ width: 28, height: 28 }}/>
-                      </button>
+                      {/* Removido botão de exclusão, agora está na página de edição */}
                       <button 
                         className="btn-image" 
                         onClick={() => navigate(`/admin/reservas/${reserva.id}`)}
@@ -182,18 +151,7 @@ function AdminReservas() {
           Adicionar
         </button>
 
-        {showModal && (
-          <div className="modal-bg" onClick={fecharModal}>
-            <div className="modal" onClick={e => e.stopPropagation()}>
-              <h2>Confirmar Exclusão</h2>
-              <p>Deseja realmente excluir a reserva <b>{reservaSelecionada?.id}</b>?</p>
-              <div className="modal-actions">
-                <button className="btn-cancel" onClick={fecharModal}>Cancelar</button>
-                <button className="btn-confirm" onClick={confirmarExclusao}>Excluir</button>
-              </div>
-            </div>
-          </div>
-        )}
+  {/* Modal de exclusão removido, agora está na página de edição */}
       </div>
     </>
   );
