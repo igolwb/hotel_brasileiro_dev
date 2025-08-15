@@ -17,6 +17,8 @@ function LoginPage() {
   const [senha, setSenha] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
+  const [showPassword, setShowPassword] = useState(false);
+
   // Função para tratar o envio do formulário de login
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -76,14 +78,25 @@ function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <label>Senha</label>
-          <input
-            type="password"
-            placeholder="Digite sua senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-          />
+         <label>Senha</label>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <input
+      type={showPassword ? "text" : "password"}
+      placeholder="Digite sua senha"
+      value={senha}
+      onChange={(e) => setSenha(e.target.value)}
+      required
+      style={{ flex: 1 }}
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword((prev) => !prev)}
+      style={{ marginLeft: '8px' }}
+      tabIndex={-1}
+    >
+      {showPassword ? "Ocultar" : "Mostrar"}
+    </button>
+  </div>
           <Link className="hint" to="/cadastro" onClick={() => navigate('/cadastro')}>
             Crie sua conta e desvende o hotel
           </Link>
