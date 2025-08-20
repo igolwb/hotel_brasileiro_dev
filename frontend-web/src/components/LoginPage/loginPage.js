@@ -2,8 +2,6 @@ import "./LoginPage.css";
 import homeimg from "../../assets/Home.svg";
 import logo from '../../assets/logo.svg';
 import { useNavigate, Link } from 'react-router-dom';
-import eye from '../../assets/eye.png';
-import eyeOff from '../../assets/eye-off.png';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from 'axios';
 import { useState } from 'react';
@@ -81,29 +79,23 @@ function LoginPage() {
             required
           />
          <label>Senha</label>
-  <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
     <input
-      type={showPassword ? 'text' : 'password'}
+      type={showPassword ? "text" : "password"}
       placeholder="Digite sua senha"
       value={senha}
       onChange={(e) => setSenha(e.target.value)}
       required
       style={{ flex: 1 }}
     />
-    <img
-      src={showPassword ? eyeOff : eye}
-      alt={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+    <button
+      type="button"
       onClick={() => setShowPassword((prev) => !prev)}
-      style={{
-        width: 24,
-        height: 24,
-        cursor: 'pointer',
-        marginLeft: 8,
-        position: 'absolute',
-        right: 0
-      }}
+      style={{ marginLeft: '8px' }}
       tabIndex={-1}
-    />
+    >
+      {showPassword ? "Ocultar" : "Mostrar"}
+    </button>
   </div>
           <Link className="hint" to="/cadastro" onClick={() => navigate('/cadastro')}>
             Crie sua conta e desvende o hotel
@@ -112,15 +104,9 @@ function LoginPage() {
             <div style={{ color: 'red', fontSize: '0.95rem', marginBottom: '8px', textAlign: 'center' }}>{errorMsg}</div>
           )}
           <button type="submit">Desbloquear estadia</button>
-          <div className="back-home" style={{ display: 'flex', alignItems: 'center', marginTop: '18px' }}>
-            <p style={{ fontSize: '0.8rem', fontWeight: 'normal', marginRight: '8px' }}>Volte para o início</p>
-            <img
-              className="home-icon"
-              src={homeimg}
-              alt="Home"
-              onClick={() => navigate('/')}
-              style={{ width: 24, height: 24, cursor: 'pointer' }}
-            />
+          <div className="back-home">
+            <p>Volte para o início</p>
+            <img className="home-icon" src={homeimg} alt="Home" onClick={() => navigate('/')} />
           </div>
         </form>
       </div>

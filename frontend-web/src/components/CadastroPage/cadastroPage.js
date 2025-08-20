@@ -1,8 +1,7 @@
 import "./CadastroPage.css";
 import homeimg from "../../assets/Home.svg";
 import logo from '../../assets/logo.svg';
-import eye from '../../assets/eye.png';
-import eyeOff from '../../assets/eye-off.png';
+
 import { useNavigate, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import useApiStore from '../../services/api.js';
@@ -16,8 +15,7 @@ function CadastroPage() {
   // Estado para detectar se é mobile
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
 
-  // Atualiza o estado isMobile ao redimensionar a telay
-  
+  // Atualiza o estado isMobile ao redimensionar a tela
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 992);
@@ -233,8 +231,7 @@ function CadastroPage() {
                 style: { flex: 1, ...(passwordRequirements.every(r => r.test(form.senha)) || !form.senha ? {} : { borderColor: 'red' }) }
               }),
               React.createElement('img', {
-                src: showPassword ? eyeOff : eye,
-                alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
+
                 onClick: () => setShowPassword((prev) => !prev),
                 style: {
                   width: 24,
@@ -258,7 +255,7 @@ function CadastroPage() {
                 style: { flex: 1, ...(form.confirmSenha && form.senha !== form.confirmSenha ? { borderColor: 'red' } : {}) }
               }),
               React.createElement('img', {
-                src: showPassword ? eyeOff : eye,
+
                 alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
                 onClick: () => setShowPassword((prev) => !prev),
                 style: {

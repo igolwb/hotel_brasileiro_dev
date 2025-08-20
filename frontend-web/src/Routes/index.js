@@ -12,6 +12,7 @@ import EditarReserva from '../components/AdminPages/EditarReserva/editReserva.js
 import AddReserva from '../components/AdminPages/EditarReserva/addReserva.js';
 import MinhasReservas from '../components/MenuUser/menuUser.js';
 import SuccessPage from '../components/ReservaConcluida/successPage.js';
+import ReservaGraphs from '../components/AdminPages/ReservaGraphs/reservaGraphs.js';
 
 
 function AppRoutes() {
@@ -27,11 +28,13 @@ function AppRoutes() {
       {/* Rotas de Admin */}
       
       <Route path="/admin/clientes" element={<Clientes />} />
+
       <Route path="/admin/quartos" element={<Quartos />} />
       <Route path="/admin/quartos/:id" element={<EditarQuarto />} />
       <Route path="/admin/quartos/addQuarto" element={<AddQuarto />} />
 
       <Route path="/admin/reservas" element={<AdminReservas />} />
+      <Route path="/admin/estatisticas" element={<ReservaGraphs />} />
       <Route path="/admin/reservas/:id" element={<EditarReserva />} />
       <Route path="/admin/reservas/addReserva" element={<AddReserva />} />
     </Routes>

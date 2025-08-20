@@ -289,6 +289,22 @@ deleteReserva: async (id, authHeader) => {
     set({ error: error.message || 'Erro ao deletar reserva', loading: false });
   }
 },
+
+getReservasEstatisticas: async (authHeader) => {
+  set({ loading: true, error: null });
+  try {
+    const response = await axios.get(`${URL}/api/reservas/estatisticas`, {
+      headers: {
+        Authorization: authHeader
+      }
+    });
+    set({ loading: false });
+    return response.data; // contains total_profit, profit_12m, profit_6m, profit_1m, monthly_income
+  } catch (error) {
+    set({ error: error.message || 'Erro ao buscar estatísticas', loading: false });
+    return null;
+  }
+},
 }));
 
 export default useApiStore;
