@@ -82,14 +82,14 @@ export const criarReserva = async (req, res) => {
     // Calcular preço total
     const preco_total = Number(preco) * diarias;
 
-    // Inserir reserva com preco_total
-    const reservaResult = await sql`
-      INSERT INTO reservas 
-        (quarto_id, cliente_id, hospedes, inicio, fim, preco_total)
-      VALUES 
-        (${quarto_id}, ${cliente_id}, ${hospedes}, ${inicio}, ${fim}, ${preco_total})
-      RETURNING *;
-    `;
+      // Inserir reserva com preco_total e reservado_em
+      const reservaResult = await sql`
+        INSERT INTO reservas 
+          (quarto_id, cliente_id, hospedes, inicio, fim, preco_total, reservado_em)
+        VALUES 
+          (${quarto_id}, ${cliente_id}, ${hospedes}, ${inicio}, ${fim}, ${preco_total}, NOW())
+        RETURNING *;
+      `;
 
     res.status(201).json({ success: true, data: reservaResult[0] });
   } catch (error) {
@@ -210,3 +210,56 @@ export async function getReservasUsuario(req, res) {
     res.status(500).json({ error: 'Erro ao buscar reservas' });
   }
 }
+
+
+// Estatísticas de reservas: lucro total, lucro por período, receita mensal
+export const getEstatisticasReservas = async (req, res) => {
+  try {
+    // Lucro total (toda a história)
+    const [total] = await sql`SELECT COALESCE(SUM(preco_total), 0) AS total_profit FROM reservas`;
+
+    // Lucro nos últimos 12 meses
+    const [last12] = await sql`
+      SELECT COALESCE(SUM(preco_total), 0) AS profit_12m
+      FROM reservas
+      WHERE reservado_em >= NOW() - INTERVAL '12 months'
+    `;
+
+    // Lucro nos últimos 6 meses
+    const [last6] = await sql`
+      SELECT COALESCE(SUM(preco_total), 0) AS profit_6m
+      FROM reservas
+      WHERE reservado_em >= NOW() - INTERVAL '6 months'
+    `;
+
+    // Lucro no último mês
+    const [last1] = await sql`
+      SELECT COALESCE(SUM(preco_total), 0) AS profit_1m
+      FROM reservas
+      WHERE reservado_em >= NOW() - INTERVAL '1 month'
+    `;
+
+    // Receita mensal dos últimos 12 meses
+    const monthly = await sql`
+      SELECT
+        TO_CHAR(reservado_em, 'YYYY-MM') AS month,
+        COALESCE(SUM(preco_total), 0) AS income
+      FROM reservas
+      WHERE reservado_em >= NOW() - INTERVAL '12 months'
+      GROUP BY month
+      ORDER BY month
+    `;
+
+    res.json({
+      total_profit: total.total_profit,
+      profit_12m: last12.profit_12m,
+      profit_6m: last6.profit_6m,
+      profit_1m: last1.profit_1m,
+      monthly_income: monthly
+    });
+  } catch (error) {
+    console.error('Erro ao buscar estatísticas:', error);
+    res.status(500).json({ error: 'Erro ao buscar estatísticas' });
+  }
+}
+

@@ -114,7 +114,8 @@ async function startdb() {
         hospedes INTEGER NOT NULL,
         inicio DATE NOT NULL,
         fim DATE NOT NULL,
-        preco_total DECIMAL(10,2)
+        preco_total DECIMAL(10,2),
+        reservado_em TIMESTAMP WITH TIME ZONE
       );
     `;
 
