@@ -1,6 +1,8 @@
 import "./CadastroPage.css";
 import homeimg from "../../assets/Home.svg";
 import logo from '../../assets/logo.svg';
+import eye from '../../assets/eye.svg';
+import eyeOff from '../../assets/eye-off.svg';
 import { useNavigate, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import useApiStore from '../../services/api.js';
@@ -29,13 +31,16 @@ function CadastroPage() {
     nome: '',
     email: '',
     telefone: '',
-    senha: ''
+    senha: '',
+    confirmSenha: ''
   });
   // Estado para mensagens de erro e sucesso
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   // Estado para mostrar requisitos da senha após submit
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  // Estado para exibir/ocultar senha
+  const [showPassword, setShowPassword] = useState(false);
 
   // Regex para validação de email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -83,7 +88,7 @@ function CadastroPage() {
     setSuccess('');
     setShowPasswordRequirements(false);
     // Validação dos campos
-    if (!form.nome || !form.email || !form.telefone || !form.senha) {
+    if (!form.nome || !form.email || !form.telefone || !form.senha || !form.confirmSenha) {
       setError('Por favor, preencha todos os campos.');
       return;
     }
@@ -93,6 +98,10 @@ function CadastroPage() {
     }
     if (!phoneRegex.test(form.telefone)) {
       setError('Telefone inválido. Use o formato (XX) XXXXX-XXXX.');
+      return;
+    }
+    if (form.senha !== form.confirmSenha) {
+      setError('As senhas não coincidem.');
       return;
     }
     const failedReqs = passwordRequirements.filter(r => !r.test(form.senha));
@@ -212,15 +221,55 @@ function CadastroPage() {
               style: phoneRegex.test(form.telefone) || !form.telefone ? {} : { borderColor: 'red' }
             }),
             React.createElement('label', null, 'Senha'),
-            React.createElement('input', {
-              type: 'password',
-              name: 'senha',
-              placeholder: 'Digite sua senha',
-              value: form.senha,
-              onChange: handleChange,
-              autoComplete: 'off',
-              style: passwordRequirements.every(r => r.test(form.senha)) || !form.senha ? {} : { borderColor: 'red' }
-            }),
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', position: 'relative' } }, [
+              React.createElement('input', {
+                type: showPassword ? 'text' : 'password',
+                name: 'senha',
+                placeholder: 'Digite sua senha',
+                value: form.senha,
+                onChange: handleChange,
+                autoComplete: 'off',
+                style: { flex: 1, ...(passwordRequirements.every(r => r.test(form.senha)) || !form.senha ? {} : { borderColor: 'red' }) }
+              }),
+              React.createElement('img', {
+                src: showPassword ? eyeOff : eye,
+                alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
+                onClick: () => setShowPassword((prev) => !prev),
+                style: {
+                  width: 24,
+                  height: 24,
+                  cursor: 'pointer',
+                  marginLeft: 8,
+                  position: 'absolute',
+                  right: 0
+                }
+              })
+            ]),
+            React.createElement('label', null, 'Confirme a senha'),
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', position: 'relative' } }, [
+              React.createElement('input', {
+                type: showPassword ? 'text' : 'password',
+                name: 'confirmSenha',
+                placeholder: 'Confirme sua senha',
+                value: form.confirmSenha,
+                onChange: handleChange,
+                autoComplete: 'off',
+                style: { flex: 1, ...(form.confirmSenha && form.senha !== form.confirmSenha ? { borderColor: 'red' } : {}) }
+              }),
+              React.createElement('img', {
+                src: showPassword ? eyeOff : eye,
+                alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
+                onClick: () => setShowPassword((prev) => !prev),
+                style: {
+                  width: 24,
+                  height: 24,
+                  cursor: 'pointer',
+                  marginLeft: 8,
+                  position: 'absolute',
+                  right: 0
+                }
+              })
+            ]),
             // Lista de requisitos da senha só após submit
             showPasswordRequirements && form.senha && passwordRequirements.some(r => !r.test(form.senha)) && React.createElement(
               'ul',
