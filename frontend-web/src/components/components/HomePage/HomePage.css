@@ -1,0 +1,296 @@
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+*{
+  font-family: Inter, sans-serif;
+}
+/* Hero Section */
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    background: url('../../assets/fundo1.svg') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
+  
+  .hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  
+  .hero-content {
+    position: absolute;
+    top: 9%;
+    left: 7%;
+    z-index: 2;
+    text-align: left;
+    color: white;
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-content p {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+  }
+
+  .divisao {
+    display: block;
+    width: 100%;
+    margin-bottom: 3%;
+    height: auto; /* adjust if needed */
+    }
+  
+  /* Rooms Section */
+  .rooms-section {
+    position: relative;
+    min-height: 100vh;
+    background: #fff;
+    overflow: hidden;
+    padding: 60px 0 80px 0;
+    margin-top: -3%;
+  }
+  
+  .rooms-stripes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+      url('../../assets/linha1.svg'),
+      url('../../assets/linha2.svg'),
+      url('../../assets/linha3.svg');
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-position:
+      top left,
+      top right,
+      bottom center;
+    background-size:
+    30vw auto, 30vw auto, 100vw auto;
+  }
+  
+  .rooms-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 85%;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 8.5%;
+    padding-bottom: 3%;
+  }
+  
+  .rooms-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .rooms-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  .room-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 650px;
+    max-height: 650px;
+  }
+  
+  .room-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .room-info {
+    padding: 1.2rem;
+    text-align: left;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .room-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .room-info p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .room-info ul {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    padding-left: 1.2rem;
+  }
+  
+  .reserve-btn {
+    text-decoration: none;
+    text-align: center;
+    background: #17607d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+  }
+  
+  .reserve-btn:hover {
+    background: #0e3c50;
+  }
+
+  .slick-slide >div {
+    margin: 0 5%;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .room-card {
+      min-height: 420px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .rooms-content h2 {
+      font-size: 2rem;
+    }
+    .room-card {
+      min-height: 380px;
+    }
+  }
+
+  /* Experiences Section Carousel */
+.experiences-section {
+    position: relative;
+    width: 100%;
+    padding: 80px 0 0 0;
+    background-color: #fff;
+    overflow: hidden;
+  }
+  
+  .experiences-content {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 60px;
+  }
+  
+  .experiences-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #000;
+  }
+  
+  .experiences-content > p {
+    font-size: 1.7rem;
+    margin-bottom: 3rem;
+    color: #333;
+  }
+  
+  .experience-card {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    margin: 0 auto;
+    width: 320px;
+    height: 500px;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  
+  .experience-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1;
+  }
+  
+  .experience-overlay {
+    position: relative;
+    z-index: 2;
+    padding: 30px 25px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 100%);
+    color: white;
+    text-align: left;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  
+  .experience-time {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    line-height: 1.3;
+  }
+  
+  .experience-overlay h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+  
+  .experience-overlay p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  
+  .wave-divider {
+    display: block;
+    width: 100%;
+    margin-top: -1px;
+    margin-bottom: 5%;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .experience-card {
+      width: 300px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .experiences-content h2 {
+      font-size: 2rem;
+    }
+    .experience-card {
+      width: 90%;
+      max-width: 400px;
+    }
+  }
