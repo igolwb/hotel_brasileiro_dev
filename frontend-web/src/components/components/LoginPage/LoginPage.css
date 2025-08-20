@@ -1,0 +1,166 @@
+body {
+  margin: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: #fff;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-panel {
+  background: #0f2a3e;
+  color: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+
+.logo-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* ajuste o espaçamento conforme necessário */
+}
+
+.logo-img-login {
+  width: 60%;
+  height: auto;
+}
+
+.left-panel h1 {
+  font-size: 2.5rem;
+  margin: 0 0 20px 0;
+  font-weight: bold;
+}
+
+.left-panel h2 {
+  font-size: 2.0trem;
+  margin-bottom: 10px;
+}
+
+.left-panel p {
+  font-size: 0.7rem;
+  margin-bottom: 60vh;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+
+.login-form {
+  width: 47.5vh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-form h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.login-form label {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.login-form input {
+  padding: 12px;
+  border-radius: 16px;
+  border: none;
+  background: #eaf5f3;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.hint {
+  font-size: 0.9rem;
+  color: #1d6985;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.login-form button {
+  background: #1d6985;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+.back-home {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #000;
+  cursor: pointer;
+}
+
+.home-icon {
+  width: 17%;
+}
+
+@media (min-width: 769px) {
+.container {
+  flex-direction: row;
+  height: 100vh;
+}
+
+.left-panel {
+  flex: 1;
+  height: auto;
+  padding: 0px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.logo-title-row {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.logo-img-login {
+  max-width: 120px;
+  width: 100%;
+  height: auto;
+}
+
+.left-panel h1,
+.left-panel h2,
+.left-panel p {
+  display: block;
+  
+}
+
+.right-panel {
+  flex: 1;
+  padding: 20px;
+}
+
+.login-form {
+  max-width: 400px;
+  gap: 16px;
+}
+
+.login-form h2 {
+  font-size: 2rem;
+}
+}

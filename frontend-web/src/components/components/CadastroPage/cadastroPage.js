@@ -1,8 +1,8 @@
 import "./CadastroPage.css";
 import homeimg from "../../assets/Home.svg";
 import logo from '../../assets/logo.svg';
-import eye from '../../assets/eye.png';
-import eyeOff from '../../assets/eye-off.png';
+import eye from '../../assets/eye.svg';
+import eyeOff from '../../assets/eye-off.svg';
 import { useNavigate, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import useApiStore from '../../services/api.js';
@@ -16,8 +16,7 @@ function CadastroPage() {
   // Estado para detectar se é mobile
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
 
-  // Atualiza o estado isMobile ao redimensionar a telay
-  
+  // Atualiza o estado isMobile ao redimensionar a tela
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 992);
@@ -236,14 +235,7 @@ function CadastroPage() {
                 src: showPassword ? eyeOff : eye,
                 alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
                 onClick: () => setShowPassword((prev) => !prev),
-                style: {
-                  width: 24,
-                  height: 24,
-                  cursor: 'pointer',
-                  marginLeft: 8,
-                  position: 'absolute',
-                  right: 0
-                }
+                className: 'eye-icon'
               })
             ]),
             React.createElement('label', null, 'Confirme a senha'),
@@ -261,14 +253,7 @@ function CadastroPage() {
                 src: showPassword ? eyeOff : eye,
                 alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
                 onClick: () => setShowPassword((prev) => !prev),
-                style: {
-                  width: 24,
-                  height: 24,
-                  cursor: 'pointer',
-                  marginLeft: 8,
-                  position: 'absolute',
-                  right: 0
-                }
+                className: 'eye-icon'
               })
             ]),
             // Lista de requisitos da senha só após submit
