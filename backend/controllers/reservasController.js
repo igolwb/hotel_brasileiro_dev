@@ -239,11 +239,12 @@ export const getEstatisticasReservas = async (req, res) => {
       WHERE reservado_em >= NOW() - INTERVAL '1 month'
     `;
 
-    // Receita mensal dos últimos 12 meses
+    // Receita mensal dos últimos 12 meses + quantidade de reservas
     const monthly = await sql`
       SELECT
         TO_CHAR(reservado_em, 'YYYY-MM') AS month,
-        COALESCE(SUM(preco_total), 0) AS income
+        COALESCE(SUM(preco_total), 0) AS income,
+        COUNT(*) AS count
       FROM reservas
       WHERE reservado_em >= NOW() - INTERVAL '12 months'
       GROUP BY month
