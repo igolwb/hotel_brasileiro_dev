@@ -4,6 +4,8 @@ import logo from '../../assets/logo.svg';
 
 import { useNavigate, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import showPasswordOn from '../../assets/eye-slash.svg';
+import showPasswordOff from '../../assets/eye-fill.svg';
 import useApiStore from '../../services/api.js';
 
 // Componente de página de cadastro de novo cliente
@@ -40,6 +42,7 @@ function CadastroPage() {
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
   // Estado para exibir/ocultar senha
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Regex para validação de email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -231,7 +234,8 @@ function CadastroPage() {
                 style: { flex: 1, ...(passwordRequirements.every(r => r.test(form.senha)) || !form.senha ? {} : { borderColor: 'red' }) }
               }),
               React.createElement('img', {
-
+                src: showPassword ? showPasswordOn : showPasswordOff,
+                alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
                 onClick: () => setShowPassword((prev) => !prev),
                 style: {
                   width: 24,
@@ -246,7 +250,7 @@ function CadastroPage() {
             React.createElement('label', null, 'Confirme a senha'),
             React.createElement('div', { style: { display: 'flex', alignItems: 'center', position: 'relative' } }, [
               React.createElement('input', {
-                type: showPassword ? 'text' : 'password',
+                type: showConfirmPassword ? 'text' : 'password',
                 name: 'confirmSenha',
                 placeholder: 'Confirme sua senha',
                 value: form.confirmSenha,
@@ -255,9 +259,9 @@ function CadastroPage() {
                 style: { flex: 1, ...(form.confirmSenha && form.senha !== form.confirmSenha ? { borderColor: 'red' } : {}) }
               }),
               React.createElement('img', {
-
-                alt: showPassword ? 'Ocultar senha' : 'Mostrar senha',
-                onClick: () => setShowPassword((prev) => !prev),
+                src: showConfirmPassword ? showPasswordOn : showPasswordOff,
+                alt: showConfirmPassword ? 'Ocultar senha' : 'Mostrar senha',
+                onClick: () => setShowConfirmPassword((prev) => !prev),
                 style: {
                   width: 24,
                   height: 24,
