@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; 
 import "./successPage.css";
-
 
 const SuccessPage = ({ selectedRoom }) => {
   // Se selectedRoom não for passado via props, tenta recuperar do localStorage
@@ -18,10 +17,7 @@ const SuccessPage = ({ selectedRoom }) => {
 
   if (!room) {
     return (
-      <div
-        className="success-container"
-
-      >
+      <div className="success-container">
         <h1 className="success-title">Reserva não encontrada</h1>
         <Link to="/" className="back-button">
           Voltar para o início
@@ -38,9 +34,7 @@ const SuccessPage = ({ selectedRoom }) => {
   const preco = room.preco || room.preco_total || "";
 
   return (
-    <div
-      className="success-container"
-    >
+    <div className="success-container">
       <h1 className="success-title">Quarto reservado com sucesso</h1>
       <div className="success-content">
         <div className="room-cardb">

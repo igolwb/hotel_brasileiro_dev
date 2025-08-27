@@ -8,38 +8,29 @@ import './clientePage.css';
 const USERS_PER_PAGE = 10;
 
 function Clientes() {
-  // Hook customizado para autenticação de admin
   const { authUser, authHeader } = useAuthAdmin();
   const navigate = useNavigate();
-  
-  // Hooks e métodos da store de API para clientes
+
   const {
     clientes,
     loading,
     fetchClientes,
   } = useApiStore();
 
-  // Estado para controlar a página atual da paginação
   const [currentPage, setCurrentPage] = useState(1);
-  // Estado para busca
   const [search, setSearch] = useState('');
-
-  // Modal de reservas do cliente
   const [showModal, setShowModal] = useState(false);
   const [reservasCliente, setReservasCliente] = useState([]);
   const [selectedCliente, setSelectedCliente] = useState(null);
 
-  // Busca os clientes ao carregar o componente ou quando o admin muda
   useEffect(() => {
     if (authUser) {
       fetchClientes(authHeader);
     }
   }, [fetchClientes, authUser, authHeader]);
 
-  // Função para abrir modal e buscar reservas do cliente
   async function abrirModal(cliente) {
     setSelectedCliente(cliente);
-    // Busca reservas do cliente com nome do quarto
     const reservas = await useApiStore.getState().fetchReservasCliente(cliente.id, authHeader);
     setReservasCliente(reservas);
     setShowModal(true);
@@ -55,7 +46,6 @@ function Clientes() {
     navigate(`/admin/reservas/${reserva.id}`);
   }
 
-    // Função utilitária para formatar datas no formato dd/mm/yyyy
   function formatarData(dataStr) {
     if (!dataStr) return '';
     const data = new Date(dataStr);
@@ -66,27 +56,18 @@ function Clientes() {
   }
 
   async function handleDeleteReserva(reserva) {
-    // Placeholder: você pode implementar a exclusão real aqui
     alert('Excluir reserva: ' + reserva.id);
   }
 
-  // Filtra clientes por busca (ID ou email)
   const filteredClientes = clientes.filter(cliente =>
     cliente.email.toLowerCase().includes(search.toLowerCase()) ||
     cliente.id.toString().includes(search)
   );
 
-  // Calcula o índice do primeiro e último usuário da página atual
   const indexOfLastUser = currentPage * USERS_PER_PAGE;
   const indexOfFirstUser = indexOfLastUser - USERS_PER_PAGE;
-
-  // Lista de clientes da página atual
   const currentUsers = filteredClientes.slice(indexOfFirstUser, indexOfLastUser);
-
-  // Calcula o total de páginas para a paginação
   const totalPages = Math.ceil(filteredClientes.length / USERS_PER_PAGE);
-
-  // Calcula quantas linhas vazias preencher para manter a tabela alinhada
   const linhasVazias = Math.max(0, USERS_PER_PAGE - currentUsers.length);
 
   return (
@@ -128,7 +109,13 @@ function Clientes() {
                     <td>{cliente.telefone}</td>
                     <td>{cliente.role}</td>
                     <td>
-                      <button type="button" onClick={() => abrirModal(cliente)} className="ver-reservas-btn">Ver Reservas</button>
+                      <button
+                        type="button"
+                        onClick={() => abrirModal(cliente)}
+                        className="ver-reservas-btn"
+                      >
+                        Ver Reservas
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -143,14 +130,31 @@ function Clientes() {
         </table>
 
         <div className="pagination">
-          <button className="pagination-btn" onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>Anterior</button>
+          <button
+            className="pagination-btn"
+            onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Anterior
+          </button>
           {Array.from({ length: totalPages }).map((_, idx) => (
-            <button key={idx} className={`pagination-btn ${currentPage === idx + 1 ? 'active' : ''}`} onClick={() => setCurrentPage(idx + 1)}>{idx + 1}</button>
+            <button
+              key={idx}
+              className={`pagination-btn ${currentPage === idx + 1 ? 'active' : ''}`}
+              onClick={() => setCurrentPage(idx + 1)}
+            >
+              {idx + 1}
+            </button>
           ))}
-          <button className="pagination-btn" onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>Próxima</button>
+          <button
+            className="pagination-btn"
+            onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Próxima
+          </button>
         </div>
 
-        {/* Modal de reservas do cliente */}
         {showModal && (
           <div className="modal-bg" onClick={fecharModal}>
             <div className="modal" onClick={e => e.stopPropagation()}>
@@ -176,7 +180,12 @@ function Clientes() {
                         <td>{formatarData(reserva.fim)}</td>
                         <td>{reserva.preco_total}</td>
                         <td>
-                          <button className="edit-reserva-btn" onClick={() => handleEditReserva(reserva)}>Editar</button>
+                          <button
+                            className="edit-reserva-btn"
+                            onClick={() => handleEditReserva(reserva)}
+                          >
+                            Editar
+                          </button>
                         </td>
                       </tr>
                     ))}

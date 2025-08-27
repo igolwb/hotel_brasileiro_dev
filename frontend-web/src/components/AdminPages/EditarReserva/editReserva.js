@@ -157,7 +157,7 @@ function EditarReserva() {
             className="editar-reserva-excluir"
             onClick={abrirModal}
             disabled={loading}
-            style={{ marginLeft: '10px', background: '#d9534f', color: 'white' }}
+            style={{ marginLeft: '10px', background: '#bd1b15ff', color: 'white' }}
           >
             Excluir Reserva
           </button>
