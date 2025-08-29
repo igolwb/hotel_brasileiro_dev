@@ -239,6 +239,27 @@ export const getEstatisticasReservas = async (req, res) => {
       WHERE reservado_em >= NOW() - INTERVAL '1 month'
     `;
 
+      // Reservas acumuladas nos últimos 12 meses
+      const [count12] = await sql`
+        SELECT COUNT(*) AS reservas_12m
+        FROM reservas
+        WHERE reservado_em >= NOW() - INTERVAL '12 months'
+      `;
+
+      // Reservas acumuladas nos últimos 6 meses
+      const [count6] = await sql`
+        SELECT COUNT(*) AS reservas_6m
+        FROM reservas
+        WHERE reservado_em >= NOW() - INTERVAL '6 months'
+      `;
+
+      // Reservas acumuladas no último mês
+      const [count1] = await sql`
+        SELECT COUNT(*) AS reservas_1m
+        FROM reservas
+        WHERE reservado_em >= NOW() - INTERVAL '1 month'
+      `;
+
     // Receita mensal dos últimos 12 meses + quantidade de reservas
     const monthly = await sql`
       SELECT
@@ -256,6 +277,9 @@ export const getEstatisticasReservas = async (req, res) => {
       profit_12m: last12.profit_12m,
       profit_6m: last6.profit_6m,
       profit_1m: last1.profit_1m,
+    reservas_12m: count12.reservas_12m,
+    reservas_6m: count6.reservas_6m,
+    reservas_1m: count1.reservas_1m,
       monthly_income: monthly
     });
   } catch (error) {

@@ -14,16 +14,24 @@ const store = createStore({
 
 function AppContent() {
   const location = useLocation();
-  const hideHeader = location.pathname === '/login' || location.pathname === '/cadastro' 
-  || location.pathname === '/admin/clientes' || location.pathname === '/admin/quartos' 
-  || location.pathname.includes('/admin/quartos/')  || location.pathname.includes('/admin/reservas') 
-  || location.pathname.includes('/admin/reservas/');
+  const hideHeader = location.pathname === '/login' || 
+  location.pathname === '/cadastro' || 
+  location.pathname === '/admin/clientes' || 
+  location.pathname === '/admin/quartos' || 
+  location.pathname.includes('/admin/quartos/')  || 
+  location.pathname.includes('/admin/reservas') || 
+    location.pathname.includes('/admin/estatisticas') || 
+  location.pathname.includes('/admin/reservas/');
 
 
-  const hideFooter = location.pathname === '/login' || location.pathname === '/cadastro' 
-  || location.pathname === '/admin/clientes' || location.pathname === '/admin/quartos' 
-  || location.pathname.includes('/admin/quartos/') || location.pathname.includes('/admin/reservas') 
-  || location.pathname.includes('/admin/reservas/');
+  const hideFooter = location.pathname === '/login' || 
+  location.pathname === '/cadastro' || 
+  location.pathname === '/admin/quartos' || 
+  location.pathname === '/admin/clientes' || 
+  location.pathname === '/admin/estatisticas' ||
+  location.pathname.includes('/admin/quartos/') || 
+  location.pathname.includes('/admin/reservas') || 
+  location.pathname.includes('/admin/reservas/');
   
 
   return (

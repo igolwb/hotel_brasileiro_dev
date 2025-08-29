@@ -74,15 +74,12 @@ function Clientes() {
     <>
       <AdminHeader />
       <div className="clientes-container">
+
         <h1 className="clientes-title">Clientes</h1>
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Buscar por ID ou Email"
-          className="clientes-search-box"
-          style={{ marginBottom: '16px', padding: '8px', width: '100%', maxWidth: '400px' }}
-        />
+
+        <input type="text" value={search} onChange={e => setSearch(e.target.value)} 
+        className="clientes-search-box" placeholder="Buscar por ID ou Email"/>
+
         <table className="clientes-table">
           <thead>
             <tr>
@@ -94,6 +91,7 @@ function Clientes() {
               <th>Ações</th>
             </tr>
           </thead>
+
           <tbody>
             {loading ? (
               <tr>
@@ -108,15 +106,13 @@ function Clientes() {
                     <td>{cliente.email}</td>
                     <td>{cliente.telefone}</td>
                     <td>{cliente.role}</td>
+
                     <td>
-                      <button
-                        type="button"
-                        onClick={() => abrirModal(cliente)}
-                        className="ver-reservas-btn"
-                      >
+                      <button type="button" onClick={() => abrirModal(cliente)} className="ver-reservas-btn">
                         Ver Reservas
                       </button>
                     </td>
+
                   </tr>
                 ))}
                 {Array.from({ length: linhasVazias }).map((_, idx) => (
@@ -179,14 +175,13 @@ function Clientes() {
                         <td>{formatarData(reserva.inicio)}</td>
                         <td>{formatarData(reserva.fim)}</td>
                         <td>{reserva.preco_total}</td>
+
                         <td>
-                          <button
-                            className="edit-reserva-btn"
-                            onClick={() => handleEditReserva(reserva)}
-                          >
+                          <button className="edit-reserva-btn" onClick={() => handleEditReserva(reserva)}>
                             Editar
                           </button>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>

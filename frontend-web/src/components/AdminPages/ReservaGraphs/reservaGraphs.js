@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import './reservaGraphs.css';
 import useAuthAdmin from '../../../hooks/adminAuth';
 import useApiStore from '../../../services/api';
+import AdminHeader from '../HeaderAdmin/adminHeader.js';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -99,6 +101,7 @@ const ReservaGraphs = () => {
       }
     },
     scales: {
+
       y: {
         beginAtZero: true,
         position: 'left',
@@ -115,15 +118,16 @@ const ReservaGraphs = () => {
       y1: {
         beginAtZero: true,
         position: 'right',
-        grid: {
-          drawOnChartArea: false,
-        },
+        grid: { drawOnChartArea: false,},
+
         title: {
           display: true,
           text: 'Reservas'
-        },
+          },
+
       },
     },
+
   };
 
   if (loading) return <div>Carregando gráfico...</div>;
@@ -131,24 +135,38 @@ const ReservaGraphs = () => {
   if (!monthlyData.length) return <div>Nenhum dado disponível.</div>;
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2rem', alignItems: 'flex-start', margin: '2rem 0' }}>
-      <div style={{ minWidth: 250, maxWidth: 300, background: '#f8f8f8', borderRadius: 8, padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-        <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Lucro Acumulado</h3>
-        <div style={{ marginBottom: '0.7rem' }}>
-          <strong>Últimos 12 meses:</strong><br />
-          R$ {stats?.profit_12m ?? '-'}
+    
+    <div>
+      <AdminHeader />
+      <p className="titulo-graph">Visualização Mensais</p>
+      <div className="reserva-graphs-container">
+        <div className="reserva-graphs-summary">
+
+          <h3 className="reserva-graphs-title">Lucro e reservas acumulados</h3>
+
+          <div className="reserva-graphs-period">
+            <strong>Últimos 12 meses:</strong><br />
+            R$ {stats?.profit_12m ?? '-'}<br />
+            <span className="reserva-graphs-count">Reservas: {stats?.reservas_12m ?? '-'}</span>
+          </div>
+
+          <div className="reserva-graphs-period">
+            <strong>Últimos 6 meses:</strong><br />
+            R$ {stats?.profit_6m ?? '-'}<br />
+            <span className="reserva-graphs-count">Reservas: {stats?.reservas_6m ?? '-'}</span>
+          </div>
+
+          <div className="reserva-graphs-period">
+            <strong>Último mês:</strong><br />
+            Lucro: R$ {stats?.profit_1m ?? '-'}<br />
+            <span className="reserva-graphs-count">Reservas: {stats?.reservas_1m ?? '-'}</span>
+          </div>
+
         </div>
-        <div style={{ marginBottom: '0.7rem' }}>
-          <strong>Últimos 6 meses:</strong><br />
-          R$ {stats?.profit_6m ?? '-'}
+        <div className="reserva-graphs-chart">
+          <Line data={data} options={options} />  
         </div>
-        <div>
-          <strong>Último mês:</strong><br />
-          R$ {stats?.profit_1m ?? '-'}
-        </div>
-      </div>
-      <div style={{ maxWidth: 700, flex: 1 }}>
-        <Line data={data} options={options} />
+
       </div>
     </div>
   );
