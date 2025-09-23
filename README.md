@@ -12,3 +12,32 @@ quando for dar commit, verifique todas as mudanças
 4.1: o . env vai estar inteiro em uma linha  vc vai precisar colocar paragrafos p separar tudo, 1 dps do "3000" outro dps do "require" e dps disso outro paragrafo dps de cada ' , tem uma foto no gp de como de estar dps de tudo isso
 
 5.qnd tudo estiver pronto roda primeiro o back e dps o front (o back n funciona se o front rodar primeiro)
+
+caso no mobile o "tsconfig.base" não seja gerado, crie um arquivo "tsconfig.base.json" na pasta .expo e cole o código abaixo lá
+
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-native"
+  },
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]
+}
+
+.env: 
+PORT=3000   
+#postgresql://hoteldb_owner:npg_7SjQXYmWk2Ad@ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon.tech/hoteldb?sslmode=require   PGHOST='ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon.tech'  
+PGDATABASE='hoteldb'  
+PGUSER='hoteldb_owner' 
+PGPASSWORD='npg_7SjQXYmWk2Ad' 
+JWT_SECRET='4eceed3691fef88bfb7b6ad1'

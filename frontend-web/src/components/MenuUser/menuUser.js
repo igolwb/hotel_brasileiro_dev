@@ -4,7 +4,7 @@ import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import user from '../../assets/User.svg';
 import './menuUser.css';
-import useApiStore from '../../services/api.js';
+import useApiStore from '../../services/web-api.js';
 
 function MinhasReservas() {
   const authUser = useAuthUser();

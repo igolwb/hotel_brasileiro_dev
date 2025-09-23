@@ -8,6 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import path from 'path';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import os from 'os'; // Import os module for dynamic IP detection
 
 import quartosRoutes from './routes/quartosRoutes.js';
 import clientesRoutes from './routes/clientesRoutes.js';
@@ -15,27 +16,42 @@ import reservasRoutes from './routes/reservasRoutes.js';
 
 import { sql } from './config/db.js';
 
-// Importação dos módulos necessários para o servidor Express, segurança, logs, CORS, variáveis de ambiente, documentação Swagger, autenticação e banco de dados
-
+// Load environment variables
 dotenv.config();
+
+// Get the local IP address dynamically
+const getLocalIP = () => {
+  const interfaces = os.networkInterfaces();
+  for (const name in interfaces) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return 'localhost'; // Fallback to localhost if no IP is found
+};
+
 const app = express();
-const PORT = process.env.PORT;
+const LOCAL_IP = getLocalIP();
+const WEB_FRONT_PORT = process.env.WEB_FRONT_PORT || `http://${LOCAL_IP}:3001`;
+const WEB_BACK_PORT = process.env.WEB_BACK_PORT || `http://${LOCAL_IP}:3000`;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Middlewares globais para segurança, logs, CORS e JSON
+// Middlewares
 app.use(express.json());
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(cors({
-  origin: 'http://localhost:3001',
-  exposedHeaders: ['Authorization'] // Permite que o frontend acesse o header
+  origin: '*', // Allow all origins for development
+  exposedHeaders: ['Authorization']
 }));
 
-// Carrega e serve a documentação Swagger na rota /api-docs
+// Swagger documentation
 const swaggerDocument = YAML.load(path.join(process.cwd(), 'docs', 'swagger.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Rota de login: autentica o usuário, valida senha e retorna JWT
+// Login route
 app.post('/api/login', async (req, res) => {
   const { email, senha } = req.body;
 
@@ -67,20 +83,20 @@ app.post('/api/login', async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({  success: true, token, role: user.role });
+    res.status(200).json({ success: true, token, role: user.role });
   } catch (error) {
     console.error('Erro ao realizar login:', error);
     res.status(500).json({ success: false, message: 'Erro interno no servidor.' });
   }
 });
 
-// Rotas principais da API para quartos, clientes e reservas
+// API routes
 app.use('/api/quartos', quartosRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/uploads', express.static('uploads'));
 
-// Função para inicializar o banco de dados e criar tabelas se não existirem
+// Initialize the database
 async function startdb() {
   try {
     await sql`
@@ -125,9 +141,9 @@ async function startdb() {
   }
 }
 
-// Inicializa o banco e inicia o servidor na porta definida
+// Start the server
 startdb().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+  app.listen(3000, () => {
+    console.log(`Servidor rodando na porta ${WEB_BACK_PORT}`);
   });
 });

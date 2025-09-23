@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './reservaGraphs.css';
 import useAuthAdmin from '../../../hooks/adminAuth';
-import useApiStore from '../../../services/api';
+import useApiStore from '../../../services/web-api.js';
 import AdminHeader from '../HeaderAdmin/adminHeader.js';
 import { Line } from 'react-chartjs-2';
 import {

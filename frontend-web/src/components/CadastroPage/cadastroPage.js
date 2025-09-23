@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import showPasswordOn from '../../assets/eye-slash.svg';
 import showPasswordOff from '../../assets/eye-fill.svg';
-import useApiStore from '../../services/api.js';
+import useApiStore from '../../services/web-api.js';
 
 // Componente de página de cadastro de novo cliente
 function CadastroPage() {

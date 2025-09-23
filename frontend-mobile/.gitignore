@@ -1,0 +1,54 @@
+# React Native
+node_modules/
+*.log
+*.lock
+*.tmp
+*.temp
+
+# macOS
+.DS_Store
+
+# Android
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/build/
+android/app/.cxx/
+android/app/debug.keystore
+
+# iOS
+ios/Pods/
+ios/Podfile.lock
+ios/build/
+ios/DerivedData/
+ios/.DS_Store
+
+# Expo
+.expo/
+.expo-shared/
+web-build/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment Variables
+.env
+.env.*
+
+# IDEs
+.vscode/
+.idea/
+
+# Miscellaneous
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+*.orig
+*.rej
+Thumbs.db
+
+# Generated Files
+expo-env.d.ts
+# @end expo-cli

@@ -11,6 +11,7 @@ import hora4 from '../../assets/hora4.svg';
 import hora5 from '../../assets/hora5.svg';
 import linha4 from '../../assets/linha4.svg';
 
+
 const settings = {
   dots: true,
   infinite: true,

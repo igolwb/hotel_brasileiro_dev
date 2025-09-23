@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   View,
@@ -13,63 +13,77 @@ import Header from "../../components/header";
 import BottomNav from "../../components/bottomNav";
 import Carousel from "react-native-reanimated-carousel";
 import { useRouter } from "expo-router";
+import { useSharedValue } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
-const rooms = [
-  {
-    id: "1",
-    title: "Quarto Aconchegante & Moderno",
-    description:
-      "Conforto e elegância em um ambiente acolhedor.\n\n- Cama confortável\n- Decoração moderna\n- Iluminação suave\n- Ar-condicionado\n- Janela ampla",
-    image: require("../../assets/images/quartoimg.png"),
-  },
-  {
-    id: "2",
-    title: "Quarto Aconchegante & Moderno",
-    description:
-      "Conforto e elegância em um ambiente acolhedor.\n\n- Cama confortável\n- Decoração moderna\n- Iluminação suave\n- Ar-condicionado\n- Janela ampla",
-    image: require("../../assets/images/quartoimg.png"),
-  },
-];
-
-// --- NOVOS DADOS DA SEÇÃO DE ENCONTROS ---
-const encontros = [
-  {
-    id: "1",
-    title: "Alvorada Secreta",
-    time: "04h30 – 06h00",
-    description:
-      "Um pacto com a madrugada. Seguiremos, em silêncio, até o forno de barro onde o pão nasce sob as últimas estrelas.",
-    image: require("../../assets/images/horario1.png"), // placeholder
-  },
-  {
-    id: "2",
-    title: "Passeio Surpresa",
-    time: "19h00 – 21h00",
-    description: "Uma caminhada para encontrar o inesperado ao cair da noite.",
-    image: require("../../assets/images/horario2.png"), // placeholder
-  },
-];
-
 export default function Home() {
-const router = useRouter();
 
-  const renderRoom = ({ item, index }) => (
-    <View style={styles.card} key={item.id || index}>
-      <Image source={item.image} style={styles.roomImage} resizeMode="cover" />
+	const progress = useSharedValue<4>(0);
+  const router = useRouter();
+
+  // State for rooms and encounters
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch rooms from the backend
+  useEffect(() => {
+    //troque o IP abaixo pelo IP da sua máquina, para descobrir o IP local veja no .env o processo
+    const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
+    fetch(`${API_URL}/api/quartos`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          setRooms(data.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar quartos:", err);
+        setError("Erro ao buscar quartos");
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Static data for encounters
+  const encontros = [
+    {
+      id: "1",
+      title: "Alvorada Secreta",
+      time: "04h30 – 06h00",
+      description:
+        "Um pacto com a madrugada. Seguiremos, em silêncio, até o forno de barro onde o pão nasce sob as últimas estrelas.",
+      image: require("../../assets/images/horario1.png"),
+    },
+    {
+      id: "2",
+      title: "Passeio Surpresa",
+      time: "19h00 – 21h00",
+      description: "Uma caminhada para encontrar o inesperado ao cair da noite.",
+      image: require("../../assets/images/horario2.png"),
+    },
+  ];
+
+  // Render a single room card
+  const renderRoom = ({ item }) => (
+    <View style={styles.card} key={item.id}>
+      <Image source={{ uri: item.imagem_url }} style={styles.roomImage} resizeMode="cover" />
       <View style={styles.cardContent}>
-        <Text style={styles.roomTitle}>{item.title}</Text>
-        <Text style={styles.roomDescription}>{item.description}</Text>
-        <TouchableOpacity onPress={() => router.push("/reservas/quartoDesc")} style={styles.button}>
+        <Text style={styles.roomTitle}>{item.nome}</Text>
+        <Text style={styles.roomDescription}>{item.descricao}</Text>
+        <TouchableOpacity
+          onPress={() => router.push(`/reservas/quartoDesc?id=${item.id}`)}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>Ver Detalhes</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
-  const renderEncontro = ({ item, index }) => (
-    <View style={styles.encontroCard} key={item.id || index}>
+  // Render a single encounter card
+  const renderEncontro = ({ item }) => (
+    <View style={styles.encontroCard} key={item.id}>
       <ImageBackground
         source={item.image}
         style={styles.encontroImage}
@@ -107,32 +121,52 @@ const router = useRouter();
             Clique em um quarto e agende sua estadia
           </Text>
 
-          <Carousel
-            width={width * 0.7}
-            height={500}
-            data={rooms}
-            renderItem={renderRoom}
-            style={{ marginTop: 25, alignSelf: "center", gap: 20 }}
-            loop={false}
-            autoPlay={false}
-            panGestureHandlerProps={{ activeOffsetX: [-10, 10] }}
-          />
+			<Carousel
+				data={rooms}
+        renderItem={({ item }) => renderRoom({ item })}
+				minHeight={500}
+				loop={true}
+				pagingEnabled={true}
+				snapEnabled={true}
+				width={width * 0.8}
+				style={{
+					width: width * 0.8,
+          alignSelf: "center",
+				}}
+				mode="parallax"
+				modeConfig={{
+					parallaxScrollingScale: 0.9,
+					parallaxScrollingOffset: 30,
+				}}
+				onProgressChange={progress}
+			/>
+
         </View>
 
-        {/* --- NOVA SEÇÃO DE ENCONTROS --- */}
+        {/* Encounters Section */}
         <View style={[styles.sectionencontros, { marginTop: 20 }]}>
           <Text style={styles.sectionTitle}>Programamos encontros {'\n'}com o inesperado</Text>
 
-          <Carousel
-            width={width * 0.7}
-            height={500}
-            data={encontros}
-            renderItem={renderEncontro}
-            style={{ marginTop: 20, alignSelf: "center" }}
-            loop={false}
-            autoPlay={false}
-            panGestureHandlerProps={{ activeOffsetX: [-10, 10] }}
-          />
+			<Carousel
+				data={encontros}
+        renderItem={({ item }) => renderEncontro({ item })}
+				minHeight={500}
+				loop={true}
+				pagingEnabled={true}
+				snapEnabled={true}
+				width={width * 0.8}
+				style={{
+					width: width * 0.8,
+          alignSelf: "center",
+				}}
+				mode="parallax"
+				modeConfig={{
+					parallaxScrollingScale: 0.9,
+					parallaxScrollingOffset: 30,
+				}}
+				onProgressChange={progress}
+			/>
+
         </View>
       </ScrollView>
       <BottomNav />
@@ -163,13 +197,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     height: 525,
   },
-
   sectionencontros: {
     paddingHorizontal: 20,
     height: 600,
   },
   sectionTitle: {
-    display: "flex",
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
@@ -181,6 +213,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   card: {
+    minHeight: 400,
     backgroundColor: "#fff",
     borderRadius: 12,
     overflow: "hidden",
@@ -188,7 +221,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+
   },
   roomImage: {
     width: "100%",
@@ -218,7 +251,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  // --- Estilos para os cards de encontros ---
   encontroCard: {
     borderRadius: 12,
     overflow: "hidden",

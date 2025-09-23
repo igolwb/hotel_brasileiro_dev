@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useApiStore from '../../../services/api.js';
+import useApiStore from '../../../services/web-api.js';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuthAdmin from '../../../hooks/adminAuth.js';
 import './formQuarto.css';
