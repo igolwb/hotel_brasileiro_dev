@@ -31,6 +31,7 @@ export default function RootLayout() {
         <Stack.Screen name="home/home" />
         <Stack.Screen name="chat/chatPage" />
         <Stack.Screen name="reservas/quartoDesc" />
+        <Stack.Screen name="reservas/reserva"/>
         <Stack.Screen name="reservas/reservaConfirm" />
         <Stack.Screen name="reservas/reservaFinish" />
         <Stack.Screen name="user/userPage" />

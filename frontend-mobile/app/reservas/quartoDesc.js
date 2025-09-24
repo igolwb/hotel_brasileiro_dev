@@ -1,8 +1,12 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import BottomNav from "../../components/bottomNav";
+import { useRouter } from "expo-router";
 
 export default function ReservaHotel() {
+  
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       {/* Imagem ocupa metade do topo da tela */}
@@ -28,7 +32,8 @@ export default function ReservaHotel() {
         </Text>
 
         {/* Botão de confirmar reserva */}
-        <TouchableOpacity style={styles.botao}>
+        <TouchableOpacity onPress={() => router.push(`/reservas/reserva`)} 
+        style={styles.botao}>
           <Text style={styles.textoBotao}>Prosseguir</Text>
         </TouchableOpacity>
       </View>
@@ -52,6 +57,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#142c42",
     padding: 20,
     marginTop: -20,
+    borderRadius: 20, 
   },
   titulo: {
     color: "#fff",
@@ -62,24 +68,26 @@ const styles = StyleSheet.create({
   subtitulo: {
     color: "#fff",
     marginBottom: 10,
+    fontSize: 17,
   },
   detalhesTitulo: {
     color: "#fff",
     fontWeight: "bold",
     marginTop: 10,
     marginBottom: 8,
+    fontSize: 20,
   },
   detalhe: {
     color: "#fff",
-    fontSize: 16,
-    marginBottom: 2,
+    fontSize: 18,
+    marginBottom: 5,
     fontWeight: "regular",
   },
   botao: {
     backgroundColor: "#006494",
     borderRadius: 12,
     paddingVertical: 12,
-    marginTop: 55,
+    marginTop: 50,
     alignItems: "center",
   },
   textoBotao: {
