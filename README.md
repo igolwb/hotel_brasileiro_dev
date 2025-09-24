@@ -36,7 +36,8 @@ caso no mobile o "tsconfig.base" não seja gerado, crie um arquivo "tsconfig.bas
 
 .env: 
 PORT=3000   
-#postgresql://hoteldb_owner:npg_7SjQXYmWk2Ad@ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon.tech/hoteldb?sslmode=require   PGHOST='ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon.tech'  
+#postgresql://hoteldb_owner:npg_7SjQXYmWk2Ad@ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon tech/hoteldb?sslmode=require   
+PGHOST='ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon.tech'  
 PGDATABASE='hoteldb'  
 PGUSER='hoteldb_owner' 
 PGPASSWORD='npg_7SjQXYmWk2Ad' 
