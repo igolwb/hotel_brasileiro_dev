@@ -1,121 +1,89 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ImageBackground,
-} from "react-native";
-import BottomNav from "../../components/bottomNav";
-import { useRouter } from "expo-router";
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import BottomNav from '../../components/bottomNav';
 
-export default function RecuperarSenha() {
-  const [email, setEmail] = useState("");
-  const router = useRouter();
-
-  // Função chamada ao clicar no botão "Enviar"
-
+const ProfileScreen = () => {
   return (
-    <View style={{ flex: 1 }}>
-      {/* Imagem de topo com overlay para escurecer a imagem */}
-      <View>
-        <ImageBackground
-          source={require("../../assets/images/imagemCadastro.png")} // imagem de fundo
-          style={styles.topImage} // estilo para ocupar largura total e altura fixa
-        >
-          <View style={styles.overlay} /> {/* camada semi-transparente preta */}
-        </ImageBackground>
-      </View>
-
-      {/* Container principal do conteúdo abaixo da imagem */}
-      <View style={styles.container}>
-        <Text style={styles.title}>route test</Text> {/* Título da tela */}
-        <Text style={styles.description}>
-          u pmo twin{"\n"} stg if you call me asking what's this im gonna crashout
-        </Text> {/* Descrição com instruções */}
-        <TextInput
-          style={styles.input} // estilo do campo texto
-          placeholder="Digite seu email" // texto padrão
-          placeholderTextColor="#999" // cor do placeholder
-          keyboardType="email-address" // teclado otimizado para email
-          value={email} // valor do campo conectado ao estado email
-          onChangeText={setEmail} // atualiza estado ao digitar
+    <View style={styles.container}>
+      {/* Header section */}
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Image
+          source={{uri: 'https://via.placeholder.com/150'}} // Placeholder for profile image
+          style={styles.profileImage}
         />
-        {/* Botão enviar */}
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/auth/pwconfirm")}>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
+        <Text style={styles.username}>Yasmin</Text>
+      </View>
 
-        {/* Link para voltar à tela de login */}
-        <TouchableOpacity onPress={() => router.push("/auth/Login")}>
-          <Text style={styles.voltar}>Voltar para o login</Text>
+      {/* Options Section */}
+      <View style={styles.optionsContainer}>
+        <TouchableOpacity style={styles.optionButton}>
+          <Icon name="event" size={24} color="#fff" />
+          <Text style={styles.optionText}>Reservas feitas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionButton}>
+          <Icon name="logout" size={24} color="#fff" />
+          <Text style={styles.optionText}>Sair da conta</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionButton}>
+          <Icon name="edit" size={24} color="#fff" />
+          <Text style={styles.optionText}>Editar perfil</Text>
         </TouchableOpacity>
       </View>
-            <BottomNav />
+      <BottomNav />
     </View>
   );
-}
+};
 
-// Estilos usados na tela
 const styles = StyleSheet.create({
-  topImage: {
-    width: "100%", // ocupar toda largura da tela
-    height: 376, // altura fixa da imagem
-    resizeMode: "cover", // imagem cobre área preservando proporção
+  container: {
+    flex: 1,
+    backgroundColor: '#0F1C2B', // Dark background color
+    paddingTop: 20,
+    paddingHorizontal: 20,
   },
-  overlay: {
-    ...StyleSheet.absoluteFillObject, // ocupar toda área do pai
-    backgroundColor: "rgba(0,0,0,0.4)", // camada preta semi-transparente para escurecer imagem
+  header: {
+    alignItems: 'center',
+    marginBottom: 30,
   },
- container: {
-  flex: 1,
-  paddingHorizontal: 20,
-  backgroundColor: "#0B2A3A",
-  justifyContent: "flex-start", // começa do topo, mas podemos usar 'center' ou 'flex-end'
-  paddingTop: 50, // também pode manter se quiser um espaçamento extra
-},
-
-  title: {
-    padding: 20,
-    marginTop: 10, // valor maior "desce" mais
-    fontSize: 20,
-    color: "#FFF",
-    marginVertical: 15,
-    fontWeight: "intermediate",
-  alignSelf: "center",
-},
-
-  description: {
-    color: "#E8F1F2", // cor do texto da descrição
-    fontSize: 15, // tamanho da fonte menor que título
-    marginBottom: 30, // espaçamento abaixo da descrição
-    textAlign: "center", // centralizado
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    zIndex: 1,
   },
-  input: {
-    backgroundColor: "#E8F1F2", // fundo claro para input
-    borderRadius: 10, // bordas arredondadas
-    paddingHorizontal: 15, // espaçamento interno horizontal
-    paddingVertical: 12, // espaçamento interno vertical
-    fontSize: 16, // tamanho da fonte do input
-    marginBottom: 40, // margem abaixo para espaçamento
-    color: "#000", // texto em preto
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#ccc',
+    marginBottom: 10,
   },
-  button: {
-    backgroundColor: "#006494", // cor azul do botão
-    borderRadius: 10, // bordas arredondadas
-    paddingVertical: 16, // altura do botão
-    alignItems: "center", // texto centralizado no botão
-    marginBottom: 25, // margem abaixo para espaçamento
+  username: {
+    fontSize: 22,
+    color: '#fff',
+    fontWeight: 'bold',
   },
-  buttonText: {
-    color: "#fff", // cor branca do texto do botão
-    fontSize: 16, // tamanho da fonte do texto do botão
-    fontWeight: "bold", // texto em negrito
+  optionsContainer: {
+    marginBottom: 30, // Adjusted space for the options
   },
-  voltar: {
-    color: "#FFF", // texto branco
-    fontSize: 13, // tamanho menor
-    textAlign: "center", // centralizado horizontalmente
+  optionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15, // Adjusted padding for the buttons
+    paddingHorizontal: 20,
+    marginBottom: 10, // Margin between buttons
+    borderRadius: 10, // Rounded corners for the button
+    backgroundColor: '#1F2C3C', // Button background color
+  },
+  optionText: {
+    fontSize: 18,
+    color: '#fff',
+    marginLeft: 15,
   },
 });
+
+export default ProfileScreen;

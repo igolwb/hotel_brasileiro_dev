@@ -32,7 +32,7 @@ export default function RecuperarSenha() {
       <View style={styles.container}>
         <Text style={styles.title}>route test</Text> {/* Título da tela */}
         <Text style={styles.description}>
-          u pmo twin{"\n"} stg if you call me asking what's this im gonna crashout
+          u pmo twin{"\n"} stg if you call's this im gonna crashout
         </Text> {/* Descrição com instruções */}
         <TextInput
           style={styles.input} // estilo do campo texto

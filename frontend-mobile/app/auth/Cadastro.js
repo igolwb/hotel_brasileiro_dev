@@ -19,7 +19,130 @@ export default function Cadastro() {
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const [senha, setSenha] = useState("");
+  const [confirmSenha, setConfirmSenha] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
   const router = useRouter();
+
+  // Regex para validação de email e telefone
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+  // Requisitos de senha
+  const passwordRequirements = [
+    { label: 'Mínimo 8 caracteres', test: (s) => s.length >= 8 },
+    { label: 'Ao menos uma letra maiúscula', test: (s) => /[A-Z]/.test(s) },
+    { label: 'Ao menos uma letra minúscula', test: (s) => /[a-z]/.test(s) },
+    { label: 'Ao menos um número', test: (s) => /[0-9]/.test(s) },
+    { label: 'Ao menos um caractere especial', test: (s) => /[^A-Za-z0-9]/.test(s) }
+  ];
+
+  // Formata o telefone enquanto digita
+  const formatPhone = (value) => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length <= 2) return `(${digits}`;
+    if (digits.length <= 7) return `(${digits.slice(0,2)}) ${digits.slice(2)}`;
+    if (digits.length <= 11) return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
+    return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
+  };
+
+  // Atualiza o estado do telefone formatando
+  const handleTelefoneChange = (value) => {
+    setTelefone(formatPhone(value));
+    setError("");
+    setSuccess("");
+    setShowPasswordRequirements(false);
+  };
+
+  // Atualiza outros campos
+  const handleNomeChange = (value) => {
+    setNome(value);
+    setError("");
+    setSuccess("");
+    setShowPasswordRequirements(false);
+  };
+  const handleEmailChange = (value) => {
+    setEmail(value);
+    setError("");
+    setSuccess("");
+    setShowPasswordRequirements(false);
+  };
+  const handleSenhaChange = (value) => {
+    setSenha(value);
+    setError("");
+    setSuccess("");
+    setShowPasswordRequirements(false);
+  };
+  const handleConfirmSenhaChange = (value) => {
+    setConfirmSenha(value);
+    setError("");
+    setSuccess("");
+    setShowPasswordRequirements(false);
+  };
+
+  // Envia o formulário para criar um novo cliente
+  const handleSubmit = async () => {
+    setError("");
+    setSuccess("");
+    setShowPasswordRequirements(false);
+    if (!nome || !email || !telefone || !senha || !confirmSenha) {
+      setError("Por favor, preencha todos os campos.");
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setError("Email inválido.");
+      return;
+    }
+    if (!phoneRegex.test(telefone)) {
+      setError("Telefone inválido. Use o formato (XX) XXXXX-XXXX.");
+      return;
+    }
+    if (senha !== confirmSenha) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+    const failedReqs = passwordRequirements.filter(r => !r.test(senha));
+    if (failedReqs.length > 0) {
+      setError("Senha inválida. Veja os requisitos abaixo.");
+      setShowPasswordRequirements(true);
+      return;
+    }
+    setLoading(true);
+    try {
+      // Use .env address as in home.js
+      const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.56.1:3000";
+      const response = await fetch(`${API_URL}/api/clientes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ nome, email, telefone, senha })
+      });
+      const data = await response.json();
+      if (data && data.success) {
+        setSuccess("Cadastro realizado com sucesso!");
+        setTimeout(() => router.push("/home/home"), 1500);
+      } else if (data && data.message) {
+        if (data.message.includes("Email já cadastrado")) {
+          setError("Este email já está cadastrado.");
+          return;
+        }
+        if (data.message.includes("Telefone já cadastrado")) {
+          setError("Este telefone já está cadastrado.");
+          return;
+        }
+        setError(data.message);
+        return;
+      } else {
+        setError("Erro ao cadastrar. Tente novamente.");
+      }
+    } catch (err) {
+      setError("Erro ao cadastrar. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -60,7 +183,7 @@ export default function Cadastro() {
               placeholder="Digite seu nome"
               placeholderTextColor="#000"
               value={nome}
-              onChangeText={setNome}
+              onChangeText={handleNomeChange}
             />
           </View>
 
@@ -74,11 +197,11 @@ export default function Cadastro() {
               style={styles.icon}
             />
             <TextInput
-              style={[styles.input, { fontSize: 13 }]}
+              style={[styles.input, { fontSize: 13, borderColor: emailRegex.test(email) || !email ? '#fff' : 'red', borderWidth: email && !emailRegex.test(email) ? 1 : 0 }]}
               placeholder="Digite seu email"
               placeholderTextColor="#000"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={handleEmailChange}
               keyboardType="email-address"
             />
           </View>
@@ -93,12 +216,13 @@ export default function Cadastro() {
               style={styles.icon}
             />
             <TextInput
-              style={[styles.input, { fontSize: 13 }]}
+              style={[styles.input, { fontSize: 13, borderColor: phoneRegex.test(telefone) || !telefone ? '#fff' : 'red', borderWidth: telefone && !phoneRegex.test(telefone) ? 1 : 0 }]}
               placeholder="Digite seu telefone"
               placeholderTextColor="#000"
               value={telefone}
-              onChangeText={setTelefone}
+              onChangeText={handleTelefoneChange}
               keyboardType="phone-pad"
+              maxLength={15}
             />
           </View>
 
@@ -112,18 +236,56 @@ export default function Cadastro() {
               style={styles.icon}
             />
             <TextInput
-              style={[styles.input, { fontSize: 13 }]}
+              style={[styles.input, { fontSize: 13, borderColor: passwordRequirements.every(r => r.test(senha)) || !senha ? '#fff' : 'red', borderWidth: senha && !passwordRequirements.every(r => r.test(senha)) ? 1 : 0 }]}
               placeholder="Digite sua senha"
               placeholderTextColor="#000"
               value={senha}
-              onChangeText={setSenha}
+              onChangeText={handleSenhaChange}
               secureTextEntry
             />
           </View>
+
+          {/* Campo Confirme a Senha */}
+          <Text style={styles.label}>Confirme a senha</Text>
+          <View style={styles.inputWrapper}>
+            <MaterialIcons
+              name="lock-outline"
+              size={15}
+              color="#000"
+              style={styles.icon}
+            />
+            <TextInput
+              style={[styles.input, { fontSize: 13, borderColor: confirmSenha && senha !== confirmSenha ? 'red' : '#fff', borderWidth: confirmSenha && senha !== confirmSenha ? 1 : 0 }]}
+              placeholder="Confirme sua senha"
+              placeholderTextColor="#000"
+              value={confirmSenha}
+              onChangeText={handleConfirmSenhaChange}
+              secureTextEntry
+            />
+          </View>
+
+          {/* Lista de requisitos da senha só após submit */}
+          {showPasswordRequirements && senha && passwordRequirements.some(r => !r.test(senha)) && (
+            <View style={{ marginVertical: 8, marginLeft: 8 }}>
+              {passwordRequirements.map((r, idx) => (
+                <Text key={idx} style={{ color: 'red', opacity: r.test(senha) ? 0.5 : 1, fontSize: 13 }}>
+                  • {r.label}
+                </Text>
+              ))}
+            </View>
+          )}
+
+          {/* Mensagens de erro e sucesso */}
+          {error ? (
+            <Text style={{ color: 'red', textAlign: 'center', marginVertical: 8 }}>{error}</Text>
+          ) : null}
+          {success ? (
+            <Text style={{ color: 'green', textAlign: 'center', marginVertical: 8 }}>{success}</Text>
+          ) : null}
         </View>
         {/* Botão Criar Conta */}
-        <TouchableOpacity onPress={() => router.push("/src/principal/Home")} style={styles.button}>
-          <Text style={styles.buttonText}>Criar conta</Text>
+        <TouchableOpacity onPress={handleSubmit} style={styles.button} disabled={loading}>
+          <Text style={styles.buttonText}>{loading ? 'Cadastrando...' : 'Criar conta'}</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>

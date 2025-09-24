@@ -17,7 +17,38 @@ export default function Login() {
     // Estados dos campos
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+
+    // Função para tratar o envio do formulário de login
+    const handleLogin = async () => {
+        setErrorMsg("");
+        setLoading(true);
+        try {
+            // Use .env address as in Cadastro.js
+            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.56.1:3000";
+            const response = await fetch(`${API_URL}/api/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, senha })
+            });
+            const data = await response.json();
+            if (data.success) {
+                // TODO: Save token and user info if needed
+                router.push("/home/home");
+            } else {
+                setErrorMsg("Credenciais inválidas.");
+            }
+        } catch (error) {
+            setErrorMsg("Erro ao realizar login. Tente novamente.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -78,10 +109,25 @@ export default function Login() {
                             placeholderTextColor="#000"
                             value={senha}
                             onChangeText={setSenha}
-                            secureTextEntry
+                            secureTextEntry={!showPassword}
                         />
+                        <TouchableOpacity
+                            onPress={() => setShowPassword((prev) => !prev)}
+                            style={{ marginLeft: 8 }}
+                        >
+                            <MaterialIcons
+                                name={showPassword ? "visibility-off" : "visibility"}
+                                size={20}
+                                color="#000"
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
+
+                {/* Mensagem de erro */}
+                {errorMsg ? (
+                    <Text style={{ color: 'red', textAlign: 'center', marginVertical: 8 }}>{errorMsg}</Text>
+                ) : null}
 
                 {/* Botão para recuperar senha */}
                 <TouchableOpacity
@@ -93,10 +139,11 @@ export default function Login() {
 
                 {/* Botão para entrar na home */}
                 <TouchableOpacity
-                    onPress={() => router.push("/home/home")}
+                    onPress={handleLogin}
                     style={styles.button}
+                    disabled={loading}
                 >
-                    <Text style={styles.buttonText}>Entrar</Text>
+                    <Text style={styles.buttonText}>{loading ? "Entrando..." : "Entrar"}</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
