@@ -1,121 +1,90 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ImageBackground,
-} from "react-native";
+import React from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import BottomNav from "../../components/bottomNav";
-import { useRouter } from "expo-router";
 
-export default function RecuperarSenha() {
-  const [email, setEmail] = useState("");
-  const router = useRouter();
-
-  // Função chamada ao clicar no botão "Enviar"
-
+export default function ReservaHotel() {
   return (
-    <View style={{ flex: 1 }}>
-      {/* Imagem de topo com overlay para escurecer a imagem */}
-      <View>
-        <ImageBackground
-          source={require("../../assets/images/imagemCadastro.png")} // imagem de fundo
-          style={styles.topImage} // estilo para ocupar largura total e altura fixa
-        >
-          <View style={styles.overlay} /> {/* camada semi-transparente preta */}
-        </ImageBackground>
-      </View>
+    <View style={styles.container}>
+      {/* Imagem ocupa metade do topo da tela */}
+      <Image
+        source={require("../../../frontend-mobile/assets/images/reservaBg.png")}
+        style={styles.imagem}
+        resizeMode="cover"
+      />
 
-      {/* Container principal do conteúdo abaixo da imagem */}
-      <View style={styles.container}>
-        <Text style={styles.title}>route test</Text> {/* Título da tela */}
-        <Text style={styles.description}>
-          u pmo twin{"\n"} stg if you call me asking what's this im gonna crashout
-        </Text> {/* Descrição com instruções */}
-        <TextInput
-          style={styles.input} // estilo do campo texto
-          placeholder="Digite seu email" // texto padrão
-          placeholderTextColor="#999" // cor do placeholder
-          keyboardType="email-address" // teclado otimizado para email
-          value={email} // valor do campo conectado ao estado email
-          onChangeText={setEmail} // atualiza estado ao digitar
-        />
-        {/* Botão enviar */}
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/auth/pwconfirm")}>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
+      {/* Área inferior com informações do quarto */}
+      <View style={styles.info}>
+        <Text style={styles.titulo}>Quarto Aconchegante & {`\n`}Moderno</Text>
+        <Text style={styles.subtitulo}>
+          Conforto e elegância em um ambiente{`\n`} acolhedor.
+        </Text>
 
-        {/* Link para voltar à tela de login */}
-        <TouchableOpacity onPress={() => router.push("/auth/Login")}>
-          <Text style={styles.voltar}>Voltar para o login</Text>
+        <Text style={styles.detalhesTitulo}>Detalhes</Text>
+        <Text style={styles.detalhe}> Decoração com plantas e quadros artísticos</Text>
+        <Text style={styles.detalhe}> Iluminação suave e moderna</Text>
+        <Text style={styles.detalhe}> Ar-condicionado para seu bem-estar</Text>
+        <Text style={styles.detalhe}> Janela ampla com luz natural</Text>
+        <Text style={styles.detalhe}>Localizado em São Paulo - Rua das {`\n`} Palmeiras
+        </Text>
+
+        {/* Botão de confirmar reserva */}
+        <TouchableOpacity style={styles.botao}>
+          <Text style={styles.textoBotao}>Prosseguir</Text>
         </TouchableOpacity>
       </View>
-            <BottomNav />
+      <BottomNav />
     </View>
   );
 }
 
-// Estilos usados na tela
+// Estilos adaptáveis para mobile
 const styles = StyleSheet.create({
-  topImage: {
-    width: "100%", // ocupar toda largura da tela
-    height: 376, // altura fixa da imagem
-    resizeMode: "cover", // imagem cobre área preservando proporção
+  container: {
+    flex: 1,
+    backgroundColor: "#eee",
   },
-  overlay: {
-    ...StyleSheet.absoluteFillObject, // ocupar toda área do pai
-    backgroundColor: "rgba(0,0,0,0.4)", // camada preta semi-transparente para escurecer imagem
+  imagem: {
+    width: "100%",
+    height: "40%",
   },
- container: {
-  flex: 1,
-  paddingHorizontal: 20,
-  backgroundColor: "#0B2A3A",
-  justifyContent: "flex-start", // começa do topo, mas podemos usar 'center' ou 'flex-end'
-  paddingTop: 50, // também pode manter se quiser um espaçamento extra
-},
-
-  title: {
+  info: {
+    flex: 1,
+    backgroundColor: "#142c42",
     padding: 20,
-    marginTop: 10, // valor maior "desce" mais
-    fontSize: 20,
-    color: "#FFF",
-    marginVertical: 15,
-    fontWeight: "intermediate",
-  alignSelf: "center",
-},
-
-  description: {
-    color: "#E8F1F2", // cor do texto da descrição
-    fontSize: 15, // tamanho da fonte menor que título
-    marginBottom: 30, // espaçamento abaixo da descrição
-    textAlign: "center", // centralizado
+    marginTop: -20,
   },
-  input: {
-    backgroundColor: "#E8F1F2", // fundo claro para input
-    borderRadius: 10, // bordas arredondadas
-    paddingHorizontal: 15, // espaçamento interno horizontal
-    paddingVertical: 12, // espaçamento interno vertical
-    fontSize: 16, // tamanho da fonte do input
-    marginBottom: 40, // margem abaixo para espaçamento
-    color: "#000", // texto em preto
+  titulo: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 24,
+    marginBottom: 5,
   },
-  button: {
-    backgroundColor: "#006494", // cor azul do botão
-    borderRadius: 10, // bordas arredondadas
-    paddingVertical: 16, // altura do botão
-    alignItems: "center", // texto centralizado no botão
-    marginBottom: 25, // margem abaixo para espaçamento
+  subtitulo: {
+    color: "#fff",
+    marginBottom: 10,
   },
-  buttonText: {
-    color: "#fff", // cor branca do texto do botão
-    fontSize: 16, // tamanho da fonte do texto do botão
-    fontWeight: "bold", // texto em negrito
+  detalhesTitulo: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 8,
   },
-  voltar: {
-    color: "#FFF", // texto branco
-    fontSize: 13, // tamanho menor
-    textAlign: "center", // centralizado horizontalmente
+  detalhe: {
+    color: "#fff",
+    fontSize: 16,
+    marginBottom: 2,
+    fontWeight: "regular",
+  },
+  botao: {
+    backgroundColor: "#006494",
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginTop: 55,
+    alignItems: "center",
+  },
+  textoBotao: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
