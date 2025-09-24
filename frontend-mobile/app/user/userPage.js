@@ -9,7 +9,10 @@ const ProfileScreen = () => {
       {/* Header section */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#fff" />
+          <Image
+            source={require('../../assets/images/voltarBtn.png')}
+            style={{ width: 48, height: 48 }}
+          />
         </TouchableOpacity>
         <Image
           source={{uri: 'https://via.placeholder.com/150'}} // Placeholder for profile image
@@ -47,40 +50,46 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 35,
+    marginTop: 150,
   },
   backButton: {
     position: 'absolute',
-    top: 20,
+    top: -75,
     left: 20,
     zIndex: 1,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     backgroundColor: '#ccc',
-    marginBottom: 10,
+    marginBottom: 25,
   },
   username: {
-    fontSize: 22,
+    fontSize: 31,
     color: '#fff',
     fontWeight: 'bold',
   },
   optionsContainer: {
-    marginBottom: 30, // Adjusted space for the options
+    alignContent: 'center',
+    marginTop:30,
+    marginBottom: 30,
+    width:460,
+    height:80, // Adjusted space for the options
   },
   optionButton: {
+    height: 70,
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15, // Adjusted padding for the buttons
     paddingHorizontal: 20,
-    marginBottom: 10, // Margin between buttons
-    borderRadius: 10, // Rounded corners for the button
+    marginBottom: 23, // Margin between buttons
+    borderRadius: 25, // Rounded corners for the; button
     backgroundColor: '#1F2C3C', // Button background color
   },
   optionText: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#fff',
     marginLeft: 15,
   },
