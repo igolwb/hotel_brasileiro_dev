@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Componente principal da tela de cadastro
 export default function Cadastro() {
@@ -82,67 +83,61 @@ export default function Cadastro() {
   };
 
   // Envia o formulário para criar um novo cliente
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
     setError("");
     setSuccess("");
     setShowPasswordRequirements(false);
     if (!nome || !email || !telefone || !senha || !confirmSenha) {
-      setError("Por favor, preencha todos os campos.");
-      return;
+        setError("Por favor, preencha todos os campos.");
+        return;
     }
     if (!emailRegex.test(email)) {
-      setError("Email inválido.");
-      return;
+        setError("Email inválido.");
+        return;
     }
     if (!phoneRegex.test(telefone)) {
-      setError("Telefone inválido. Use o formato (XX) XXXXX-XXXX.");
-      return;
+        setError("Telefone inválido. Use o formato (XX) XXXXX-XXXX.");
+        return;
     }
     if (senha !== confirmSenha) {
-      setError("As senhas não coincidem.");
-      return;
+        setError("As senhas não coincidem.");
+        return;
     }
     const failedReqs = passwordRequirements.filter(r => !r.test(senha));
     if (failedReqs.length > 0) {
-      setError("Senha inválida. Veja os requisitos abaixo.");
-      setShowPasswordRequirements(true);
-      return;
+        setError("Senha inválida. Veja os requisitos abaixo.");
+        setShowPasswordRequirements(true);
+        return;
     }
     setLoading(true);
     try {
-      // Use .env address as in home.js
-      const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.56.1:3000";
-      const response = await fetch(`${API_URL}/api/clientes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ nome, email, telefone, senha })
-      });
-      const data = await response.json();
-      if (data && data.success) {
-        setSuccess("Cadastro realizado com sucesso!");
-        setTimeout(() => router.push("/home/home"), 1500);
-      } else if (data && data.message) {
-        if (data.message.includes("Email já cadastrado")) {
-          setError("Este email já está cadastrado.");
-          return;
+        const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
+        const response = await fetch(`${API_URL}/api/clientes`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nome, email, telefone, senha })
+        });
+
+        const data = await response.json();
+        console.log("Backend Response:", data); // Debugging
+
+        if (data.success && data.token) {
+            await AsyncStorage.setItem('authToken', data.token);
+            console.log("Token stored successfully");
+            setSuccess("Cadastro realizado com sucesso!");
+            setTimeout(() => router.push("/home/home"), 1500);
+        } else {
+            setError(data.message || "Erro ao cadastrar. Tente novamente.");
         }
-        if (data.message.includes("Telefone já cadastrado")) {
-          setError("Este telefone já está cadastrado.");
-          return;
-        }
-        setError(data.message);
-        return;
-      } else {
-        setError("Erro ao cadastrar. Tente novamente.");
-      }
     } catch (err) {
-      setError("Erro ao cadastrar. Tente novamente.");
+        console.error("Erro ao cadastrar:", err);
+        setError("Erro ao cadastrar. Tente novamente.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   return (
     <View style={{ flex: 1 }}>

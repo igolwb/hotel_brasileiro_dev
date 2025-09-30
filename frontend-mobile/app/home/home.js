@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../../components/header";
 import BottomNav from "../../components/bottomNav";
 import Carousel from "react-native-reanimated-carousel";
@@ -18,9 +19,26 @@ import { useSharedValue } from "react-native-reanimated";
 const { width } = Dimensions.get("window");
 
 export default function Home() {
-
 	const progress = useSharedValue<4>(0);
   const router = useRouter();
+
+  // Check if the user is authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        console.log("Retrieved Token:", token); // Debugging: Log the retrieved token
+        if (!token) {
+          router.push("/auth/Login"); // Redirect to login if no token is found
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        router.push("/auth/Login"); // Redirect to login on error
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   // State for rooms and encounters
   const [rooms, setRooms] = useState([]);
@@ -30,7 +48,7 @@ export default function Home() {
   // Fetch rooms from the backend
   useEffect(() => {
     //troque o IP abaixo pelo IP da sua máquina, para descobrir o IP local veja no .env o processo
-    const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.105.72.159:3000";
+    const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
     fetch(`${API_URL}/api/quartos`)
       .then((res) => res.json())
       .then((data) => {
@@ -44,6 +62,9 @@ export default function Home() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  console.log("Rooms fetched:", rooms.map(room => room.id)); // IDEIA!!!! preciso do id do quarto p fazer a navegação
+
 
   // Static data for encounters
   const encontros = [

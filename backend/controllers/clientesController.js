@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { sql } from "../config/db.js";
+import jwt from 'jsonwebtoken';
 
 // Cria um novo cliente no banco de dados, realizando hash da senha e validando campos obrigatórios
 export const criarCliente = async (req, res) => {
@@ -20,9 +21,20 @@ export const criarCliente = async (req, res) => {
       RETURNING id, nome, email, telefone;
     `;
 
-    console.log('[POST /clientes] Novo cliente criado:', novoCliente[0]);
-    res.status(201).json({ success: true, data: novoCliente[0] });
+    // Generate a JWT token with all user details
+    const token = jwt.sign(
+      {
+        id: novoCliente[0].id,
+        nome: novoCliente[0].nome,
+        email: novoCliente[0].email,
+        telefone: novoCliente[0].telefone
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
+    console.log('[POST /clientes] Novo cliente criado:', novoCliente[0]);
+    res.status(201).json({ success: true, data: novoCliente[0], token });
   } catch (error) {
     console.error('[POST /clientes] Erro na função criarCliente:', error);
 

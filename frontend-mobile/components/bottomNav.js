@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useRouter, useSegments } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function BottomNav() {
   const router = useRouter();
   const segments = useSegments();
+  const [userId, setUserId] = useState(null);
 
   // Get current route segment (e.g., "home", "chat", "user")
   const currentRoute = segments[segments.length - 1];
+
+  // Fetch the signed-in user's ID from AsyncStorage
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const id = await AsyncStorage.getItem("UserId");
+        if (id) {
+          setUserId(id);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user ID:", error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
 
   return (
     <View style={styles.navbar}>
@@ -32,7 +50,16 @@ export default function BottomNav() {
 
       <TouchableOpacity
         style={currentRoute === "userPage" ? styles.active : styles.button}
-        onPress={() => router.push("user/userPage")}
+        onPress={() => {
+          if (userId) {
+            router.push(`/user/${userId}`);
+          } else {
+            console.warn(
+              "User ID not found. Redirecting to default user page."
+            );
+            router.push("/user/userPage");
+          }
+        }}
       >
         <Image
           source={require("../assets/images/user-img.png")}

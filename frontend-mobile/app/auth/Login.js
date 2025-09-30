@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwt_decode from "jwt-decode"; // Correct import for jwt-decode
 
 // Componente principal da tela de login
 export default function Login() {
@@ -27,8 +29,7 @@ export default function Login() {
         setErrorMsg("");
         setLoading(true);
         try {
-            // Use .env address as in Cadastro.js
-            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.56.1:3000";
+            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
             const response = await fetch(`${API_URL}/api/login`, {
                 method: "POST",
                 headers: {
@@ -36,14 +37,37 @@ export default function Login() {
                 },
                 body: JSON.stringify({ email, senha })
             });
+
             const data = await response.json();
-            if (data.success) {
-                // TODO: Save token and user info if needed
-                router.push("/home/home");
+            console.log("Backend Response:", data); // Debugging
+
+            if (data.success && data.token) {
+                await AsyncStorage.setItem('authToken', data.token);
+                console.log("Token stored successfully");
+
+const decodeToken = (token) => {
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .join("")
+  );
+  return JSON.parse(jsonPayload);
+};
+
+// Replace jwt_decode with decodeToken
+const decodedToken = decodeToken(data.token);
+console.log("Decoded Token:", decodedToken);
+await AsyncStorage.setItem('UserId', decodedToken.id.toString());
+
+                router.push("/home/home"); // Redirect to home for all users
             } else {
-                setErrorMsg("Credenciais inválidas.");
+                setErrorMsg("Credenciais inválidas ou resposta inesperada.");
             }
         } catch (error) {
+            console.error("Login Error:", error);
             setErrorMsg("Erro ao realizar login. Tente novamente.");
         } finally {
             setLoading(false);

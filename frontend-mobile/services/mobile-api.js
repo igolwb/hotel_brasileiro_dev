@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const URL = process.env.MOBILE_BACK_PORT; // Ajuste para o endpoint da sua API
 
@@ -43,24 +44,28 @@ const useApiStore = create((set) => ({
     }
   },
 
-  createCliente: async (cliente, authHeader) => {
+  createCliente: async (cliente) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post(`${URL}/api/clientes`, cliente, {
-        headers: {
-          Authorization: authHeader
+      const response = await axios.post(`${URL}/api/clientes`, cliente);
+      if (response.status === 201 && response.data.success) {
+        const { token, data } = response.data;
+        if (token) {
+          await AsyncStorage.setItem('authToken', token);
         }
-      });
-      // Só adiciona se o backend realmente criou (status 201 ou response.data.success)
-      if (response.status === 201 || (response.data && response.data.success)) {
-        set((state) => ({ clientes: [...state.clientes, response.data], loading: false }));
+        set((state) => ({ clientes: [...state.clientes, data], loading: false }));
         return response.data;
       } else {
         set({ loading: false });
         throw new Error(response.data.message || 'Erro ao criar cliente');
       }
     } catch (error) {
-      set({ error: error.message || 'Erro ao criar cliente', loading: false });
+      if (error.response && error.response.headers['content-type'] !== 'application/json') {
+        console.error('Unexpected response format:', error.response.data);
+        set({ error: 'Unexpected response from the server.', loading: false });
+      } else {
+        set({ error: error.message || 'Erro ao criar cliente', loading: false });
+      }
       throw error;
     }
   },
