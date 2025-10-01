@@ -1,125 +1,170 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ImageBackground,
-  Image,
   TouchableOpacity,
-} from "react-native";
-import BottomNav from "../../components/bottomNav";
-import { useRouter } from "expo-router";
+  Alert,
+  Image,
+  ScrollView,
+} from 'react-native';
+import BottomNav from '../../components/bottomNav';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ReservaConfirm({ navigation }) {
+export default function ReservaConfirm() {
   const router = useRouter();
+  const {
+    quartoId,
+    quartoNome,
+    quartoImage,
+    checkInDate,
+    checkOutDate,
+    checkInDateISO,
+    checkOutDateISO,
+    guests,
+    preco,
+  } = useLocalSearchParams();
+
+  const handleConfirmReserva = async () => {
+    try {
+      const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.105.72.159:3000';
+      const token = await AsyncStorage.getItem('authToken');
+
+      const res = await fetch(`${API_URL}/api/reservas`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          quarto_id: quartoId,
+          hospedes: guests,
+          inicio: checkInDateISO,
+          fim: checkOutDateISO,
+        }),
+      });
+
+      if (res.ok) {
+        router.push({
+          pathname: '/reservas/reservaFinish',
+          params: {
+            quartoNome,
+            quartoImage,
+            checkInDate,
+            checkOutDate,
+            guests,
+          },
+        });
+      } else {
+        const err = await res.json();
+        console.error("Erro ao criar reserva:", err);
+        Alert.alert('Erro', err.error || 'Erro ao criar reserva');
+      }
+    } catch (error) {
+      console.error("Erro de conexão:", error);
+      Alert.alert('Erro', 'Erro ao conectar com o servidor.');
+    }
+  };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/reservaBg.png")}
-      style={styles.background}
-    >
-      {/* Back button */}
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Image
-          source={require("../../assets/images/voltarBtn.png")}
-          style={styles.backIcon}
-        />
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <Image
+          source={{ uri: quartoImage }}
+          style={styles.imagem}
+          resizeMode="cover"
+      />
+      <ScrollView style={styles.info}>
+          <Text style={styles.titulo}>Checkout</Text>
+          <Text style={styles.roomName}>{quartoNome}</Text>
 
-      {/* Bottom sheet */}
-      <View style={styles.bottomSheet}>
-        <Text style={styles.title}>Checkout</Text>
-        <Text style={styles.room}>Quarto Aconchegante & Moderno</Text>
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Check-in:</Text>
+            <Text style={styles.value}>{checkInDate}</Text>
+          </View>
 
-        <Text style={styles.label}>Experiência Adicional:</Text>
-        <Text style={styles.value}>Alvorada Secreta</Text>
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Check-out:</Text>
+            <Text style={styles.value}>{checkOutDate}</Text>
+          </View>
+          
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Hóspedes:</Text>
+            <Text style={styles.value}>{guests}</Text>
+          </View>
 
-        <Text style={[styles.label, { marginTop: 12 }]}>Total</Text>
-        <Text style={styles.value}>Investimento Total: R$ 2.300</Text>
+          <Text style={styles.totalLabel}>Total</Text>
+          <Text style={styles.totalValue}>Investimento Total: R$ {preco}</Text>
 
-        <Text style={[styles.label, { marginTop: 12 }]}>Pagamento - Pix</Text>
-        <Text style={styles.value}>
-          4fc206fb-cacb-4858-8d1e-06be251bdc78
-        </Text>
-
-        <TouchableOpacity style={styles.confirmBtn} onPress={() => router.push("/reservas/reservaFinish")}>
-          <Text style={styles.confirmText}>Confirmar reserva</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.botao} onPress={handleConfirmReserva}>
+              <Text style={styles.textoBotao}>Confirmar reserva</Text>
+          </TouchableOpacity>
+      </ScrollView>
       <BottomNav />
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width:500,
-    height: 600,
-    justifyContent: "flex-end", // keeps the sheet at the bottom
+  container: {
+      flex: 1,
+      backgroundColor: '#13293D',
   },
-
-  backButton: {
-    position: "absolute",
-    top: 60,
-    left: 30,
-    padding: 4,
-    backgroundColor: "rgba(0,0,0,0.3)",
-    borderRadius: 20,
+  imagem: {
+      width: '100%',
+      height: '40%',
   },
-
-  backIcon: {
-    width: 43,
-    height: 40,
-    tintColor: "#fff",
+  info: {
+      flex: 1,
+      backgroundColor: '#142c42',
+      padding: 20,
+      marginTop: -20,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
   },
-
-  bottomSheet: {
-    height: 500,
-    maxWidth: "100%",
-    backgroundColor: "rgba(12,34,63)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
+  titulo: {
+      color: '#fff',
+      fontWeight: 'bold',
+      fontSize: 24,
+      marginBottom: 8,
   },
-
-  title: {
-    fontSize: 20,
-    color: "#fff",
-    fontWeight: "bold",
-    marginBottom: 4,
+  roomName: {
+    fontSize: 18,
+    color: '#fff',
+    marginBottom: 20,
   },
-
-  room: {
-    fontSize: 16,
-    color: "#fff",
-    marginBottom: 16,
+  detailContainer: {
+    marginBottom: 15,
   },
-
   label: {
-    fontSize: 14,
-    color: "#a0aec0",
+      color: '#a0aec0',
+      fontSize: 16,
+      marginBottom: 4,
   },
-
   value: {
-    fontSize: 16,
-    color: "#fff",
+      color: '#fff',
+      fontSize: 18,
   },
-
-  confirmBtn: {
-    backgroundColor: "#2bb2ff",
-    paddingVertical: 14,
-    borderRadius: 10,
-    marginTop: 70,
-    alignItems: "center",
-  },
-
-  confirmText: {
-    color: "#fff",
-    fontWeight: "600",
+  totalLabel: {
+    color: '#a0aec0',
     fontSize: 16,
+    marginTop: 20,
+  },
+  totalValue: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  botao: {
+      backgroundColor: '#006494',
+      borderRadius: 12,
+      paddingVertical: 14,
+      marginTop: 40,
+      alignItems: 'center',
+  },
+  textoBotao: {
+      color: '#fff',
+      fontWeight: 'bold',
+      fontSize: 16,
   },
 });

@@ -29,7 +29,7 @@ export default function Login() {
         setErrorMsg("");
         setLoading(true);
         try {
-            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
+            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.105.72.159:3000";
             const response = await fetch(`${API_URL}/api/login`, {
                 method: "POST",
                 headers: {
