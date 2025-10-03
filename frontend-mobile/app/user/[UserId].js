@@ -1,11 +1,31 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BottomNav from '../../components/bottomNav';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter, useSegments } from 'expo-router';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileScreen = () => {
   const { UserId } = useLocalSearchParams();
+  const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+      const fetchUserId = async () => {
+        try {
+          const id = await AsyncStorage.getItem("UserId");
+          if (id) {
+            setUserId(id);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user ID:", error);
+        }
+      };
+  
+      fetchUserId();
+    }, []);
+
+      const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -26,9 +46,12 @@ const ProfileScreen = () => {
 
       {/* Options Section */}
       <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.optionButton}>
+        <TouchableOpacity
+          style={styles.optionButton}
+          onPress={() => router.push('/user/MinhasReservas')}
+        >
           <Icon name="event" size={24} color="#fff" />
-          <Text style={styles.optionText}>Reservas feitas</Text>
+          <Text style={styles.optionText}>Minhas Reservas</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionButton}>
           <Icon name="logout" size={24} color="#fff" />
