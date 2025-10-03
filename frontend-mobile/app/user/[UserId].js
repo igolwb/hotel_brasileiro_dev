@@ -31,7 +31,7 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       {/* Header section */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Image
             source={require('../../assets/images/voltarBtn.png')}
             style={{ width: 48, height: 48 }}
@@ -53,13 +53,17 @@ const ProfileScreen = () => {
           <Icon name="event" size={24} color="#fff" />
           <Text style={styles.optionText}>Minhas Reservas</Text>
         </TouchableOpacity>
+        {/* CORREÇÃO AQUI */}
+        <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => router.push('/user/editUser')} // Adiciona a rota para a tela de edição
+        >
+          <Icon name="edit" size={24} color="#fff" />
+          <Text style={styles.optionText}>Editar perfil</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.optionButton}>
           <Icon name="logout" size={24} color="#fff" />
           <Text style={styles.optionText}>Sair da conta</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionButton}>
-          <Icon name="edit" size={24} color="#fff" />
-          <Text style={styles.optionText}>Editar perfil</Text>
         </TouchableOpacity>
       </View>
       <BottomNav />
@@ -67,6 +71,7 @@ const ProfileScreen = () => {
   );
 };
 
+// Seus estilos permanecem os mesmos
 const styles = StyleSheet.create({
   container: {
     flex: 1,

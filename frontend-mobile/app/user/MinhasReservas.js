@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import BottomNav from '../../components/bottomNav';
 
@@ -11,20 +10,55 @@ const MinhasReservas = () => {
   const [error, setError] = useState(null);
   const router = useRouter();
 
+  const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.105.75.25:3000';
+
   useEffect(() => {
     const fetchReservas = async () => {
       try {
-        const userId = await AsyncStorage.getItem('UserId');
-        const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.0.106:3000';
-        const res = await fetch(`${API_URL}/api/reservas/user/${userId}`);
+        // 1. Obter o TOKEN JWT do AsyncStorage. A chave correta é 'authToken'.
+        const token = await AsyncStorage.getItem('authToken'); // <-- CORREÇÃO AQUI
+
+        if (!token) {
+          setError('Usuário não autenticado.'); // Mensagem corrigida
+          setLoading(false);
+          // Opcional: redirecionar para a tela de login
+          // router.replace('/login');
+          return;
+        }
+
+        // 2. Usar a rota correta e enviar o token no cabeçalho
+        const res = await fetch(`${API_URL}/api/reservas/minhas-reservas`, {
+          headers: {
+            'Authorization': `Bearer ${token}` // Enviar o token JWT correto
+          }
+        });
+
         const data = await res.json();
-        if (data.success && data.data) {
-          setReservas(data.data);
+
+        // Tratar explicitamente o erro 403 que agora sabemos que pode ocorrer
+        if (res.status === 403) {
+            setError(data.error || 'Token inválido. Faça login novamente.');
+            setLoading(false);
+            return;
+        }
+
+        if (res.ok) {
+          const mappedData = data.map(item => ({
+            id: item.reserva_id,
+            quarto: {
+              nome: item.quarto_nome,
+              // Garante que a URL da imagem seja completa
+              imagem_url: item.imagem_url.startsWith('http') ? item.imagem_url : `${API_URL}/${item.imagem_url}`,
+            },
+          }));
+          setReservas(mappedData);
         } else {
           setReservas([]);
+          setError(data.error || 'Erro ao buscar reservas');
         }
       } catch (err) {
-        setError('Erro ao buscar reservas');
+        setError('Erro ao conectar com o servidor.');
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -32,11 +66,44 @@ const MinhasReservas = () => {
     fetchReservas();
   }, []);
 
-  const handleDelete = (reservaId) => {
-    // Implement delete logic if needed
+  const handleDelete = async (reservaId) => {
+    Alert.alert(
+      "Confirmar Exclusão",
+      "Deseja realmente cancelar esta reserva?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Confirmar",
+          onPress: async () => {
+            try {
+              // Use a chave correta para o token aqui também
+              const token = await AsyncStorage.getItem('authToken'); // <-- CORREÇÃO AQUI
+              const response = await fetch(`${API_URL}/api/reservas/${reservaId}`, {
+                method: 'DELETE',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+              });
+
+              if (response.ok) {
+                setReservas(prevReservas => prevReservas.filter(r => r.id !== reservaId));
+                Alert.alert("Sucesso", "Reserva cancelada com sucesso.");
+              } else {
+                const errorData = await response.json();
+                Alert.alert("Erro", errorData.message || "Não foi possível cancelar a reserva.");
+              }
+            } catch (error) {
+              Alert.alert("Erro", "Ocorreu um erro de conexão.");
+            }
+          }
+        }
+      ]
+    );
   };
 
+
   return (
+    // O restante do seu componente JSX permanece o mesmo
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
@@ -48,6 +115,8 @@ const MinhasReservas = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {loading ? (
           <Text style={styles.loading}>Carregando...</Text>
+        ) : error ? (
+          <Text style={styles.empty}>{error}</Text>
         ) : reservas.length === 0 ? (
           <Text style={styles.empty}>Nenhuma reserva encontrada.</Text>
         ) : (
@@ -73,6 +142,7 @@ const MinhasReservas = () => {
   );
 };
 
+// Seus estilos permanecem os mesmos...
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -140,5 +210,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
 
 export default MinhasReservas;

@@ -111,7 +111,7 @@ const handleSubmit = async () => {
     }
     setLoading(true);
     try {
-        const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.105.72.159:3000";
+        const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.105.75.25:3000";
         const response = await fetch(`${API_URL}/api/clientes`, {
             method: "POST",
             headers: {
