@@ -25,7 +25,17 @@ const ProfileScreen = () => {
       fetchUserId();
     }, []);
 
-      const router = useRouter();
+  const router = useRouter();
+
+  // Sign out function: remove auth data and navigate to home
+  const signOut = async () => {
+    try {
+      await AsyncStorage.multiRemove(["authToken", "UserId"]);
+      router.replace("/(tabs)/index");
+    } catch (error) {
+      console.error("Erro ao sair da conta:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -38,7 +48,7 @@ const ProfileScreen = () => {
           />
         </TouchableOpacity>
         <Image
-          source={{uri: 'https://via.placeholder.com/150'}} // Placeholder for profile image
+          source={require('../../assets/images/user_pfp.png')} // Placeholder for profile image
           style={styles.profileImage}
         />
         <Text style={styles.username}>{UserId}</Text>
@@ -53,15 +63,14 @@ const ProfileScreen = () => {
           <Icon name="event" size={24} color="#fff" />
           <Text style={styles.optionText}>Minhas Reservas</Text>
         </TouchableOpacity>
-        {/* CORREÇÃO AQUI */}
         <TouchableOpacity
             style={styles.optionButton}
-            onPress={() => router.push('/user/editUser')} // Adiciona a rota para a tela de edição
+            onPress={() => router.push('/user/editUser')}
         >
           <Icon name="edit" size={24} color="#fff" />
           <Text style={styles.optionText}>Editar perfil</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionButton}>
+        <TouchableOpacity style={styles.optionButton} onPress={signOut}>
           <Icon name="logout" size={24} color="#fff" />
           <Text style={styles.optionText}>Sair da conta</Text>
         </TouchableOpacity>

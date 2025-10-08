@@ -35,6 +35,9 @@ export default function RootLayout() {
         <Stack.Screen name="reservas/reservaConfirm" />
         <Stack.Screen name="reservas/reservaFinish" />
         <Stack.Screen name="user/userPage" />
+        <Stack.Screen name="user/changepw" />
+        <Stack.Screen name="user/pwCode" />
+        <Stack.Screen name="user/confirmNewPw" />
         
 
         {/*  Página de erro */}

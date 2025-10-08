@@ -11,68 +11,13 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from "jwt-decode"; // Correct import for jwt-decode
 
 // Componente principal da tela de login
 export default function Login() {
     // Estados dos campos
-    const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    const [errorMsg, setErrorMsg] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    const [confirmarSenha, setConfirmarSenha] = useState("");
     const router = useRouter();
-
-    // Função para tratar o envio do formulário de login
-    const handleLogin = async () => {
-        setErrorMsg("");
-        setLoading(true);
-        try {
-            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
-            const response = await fetch(`${API_URL}/api/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, senha })
-            });
-
-            const data = await response.json();
-            console.log("Backend Response:", data); // Debugging
-
-            if (data.success && data.token) {
-                await AsyncStorage.setItem('authToken', data.token);
-                console.log("Token stored successfully");
-
-const decodeToken = (token) => {
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split("")
-      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-      .join("")
-  );
-  return JSON.parse(jsonPayload);
-};
-
-// Replace jwt_decode with decodeToken
-const decodedToken = decodeToken(data.token);
-console.log("Decoded Token:", decodedToken);
-await AsyncStorage.setItem('UserId', decodedToken.id.toString());
-
-                router.push("/home/home"); // Redirect to home for all users
-            } else {
-                setErrorMsg("Credenciais inválidas ou resposta inesperada.");
-            }
-        } catch (error) {
-            console.error("Login Error:", error);
-            setErrorMsg("Erro ao realizar login. Tente novamente.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -92,32 +37,13 @@ await AsyncStorage.setItem('UserId', decodedToken.id.toString());
                 <View style={styles.formContainer}>
                     {/* Logo e nome do hotel */}
                     <View style={styles.headerRow}>
-                        <Image
-                            source={require("../../assets/images/Logo.png")}
-                            style={styles.logo}
-                        />
                     </View>
                 </View>
                 <View style={styles.inputs}>
-                    {/* Campo Email */}
-                    <Text style={styles.label}>Email</Text>
-                    <View style={styles.inputWrapper}>
-                        <MaterialIcons
-                            name="alternate-email"
-                            size={15}
-                            color="#000"
-                            style={styles.icon}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Digite seu email"
-                            placeholderTextColor="#000"
-                            value={email}
-                            onChangeText={setEmail}
-                            keyboardType="email-address"
-                        />
-                    </View>
-
+                    {/* Texto acima dos inputs */}
+                    <Text style={{ color: '#fff', fontSize: 25, textAlign: 'center', marginBottom: 40, fontWeight: 'intermedium' }}>
+                        Digite a sua nova Senha
+                    </Text>
                     {/* Campo Senha */}
                     <Text style={styles.label}>Senha</Text>
                     <View style={styles.inputWrapper}>
@@ -133,41 +59,44 @@ await AsyncStorage.setItem('UserId', decodedToken.id.toString());
                             placeholderTextColor="#000"
                             value={senha}
                             onChangeText={setSenha}
-                            secureTextEntry={!showPassword}
+                            secureTextEntry
                         />
-                        <TouchableOpacity
-                            onPress={() => setShowPassword((prev) => !prev)}
-                            style={{ marginLeft: 8 }}
-                        >
-                            <MaterialIcons
-                                name={showPassword ? "visibility-off" : "visibility"}
-                                size={20}
-                                color="#000"
-                            />
-                        </TouchableOpacity>
+                    </View>
+
+                    {/* Campo Confirmar Senha */}
+                    <Text style={styles.label}>Confirmar Senha:</Text>
+                    <View style={styles.inputWrapper}>
+                        <MaterialIcons
+                            name="lock-outline"
+                            size={15}
+                            color="#000"
+                            style={styles.icon}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Confirme sua senha"
+                            placeholderTextColor="#000"
+                            value={confirmarSenha}
+                            onChangeText={setConfirmarSenha}
+                            secureTextEntry
+                        />
                     </View>
                 </View>
-
-                {/* Mensagem de erro */}
-                {errorMsg ? (
-                    <Text style={{ color: 'red', textAlign: 'center', marginVertical: 8 }}>{errorMsg}</Text>
-                ) : null}
 
                 {/* Botão para recuperar senha */}
                 <TouchableOpacity
                     onPress={() => router.push("/auth/RecuperarSenha")}
                     style={styles.sa}
                 >
-                    <Text style={styles.texto}>Esqueceu sua senha?</Text>
+                    
                 </TouchableOpacity>
 
                 {/* Botão para entrar na home */}
                 <TouchableOpacity
-                    onPress={handleLogin}
+                    onPress={() => router.push("/home/home")}
                     style={styles.button}
-                    disabled={loading}
                 >
-                    <Text style={styles.buttonText}>{loading ? "Entrando..." : "Entrar"}</Text>
+                    <Text style={styles.buttonText}>Redefinir Senha</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
@@ -187,7 +116,7 @@ const styles = StyleSheet.create({
     texto: {
         color: "#fff",
         fontSize: 11,
-        fontWeight: "semibold",
+        fontWeight: "intermediate",
         textAlign: "right",
         marginRight: 20,
     },

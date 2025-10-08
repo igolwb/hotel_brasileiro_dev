@@ -11,7 +11,9 @@ export default function EditUser() {
 	const [phone, setPhone] = useState("");
     const [userId, setUserId] = useState(null);
 
-    const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.105.75.25:3000';
+    const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.0.106:3000';
+    // Placeholder for user photo, replace with actual image path or URL if available
+    const userPhoto = require("../../assets/images/user_pfp.png");
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -87,58 +89,67 @@ export default function EditUser() {
         }
     };
 
-	return (
-		<View style={styles.container}>
+    const handleChangePw = () => {
+        router.push('/user/changePw');
+    };
+
+    return (
+        <View style={styles.container}>
             <TouchableOpacity
                 style={styles.backButton}
                 onPress={() => router.back()}
             >
                 <Image
-                source={require("../../assets/images/voltarBtn.png")}
-                style={styles.backIcon}
+                    source={require("../../assets/images/voltarBtn.png")}
+                    style={styles.backIcon}
                 />
             </TouchableOpacity>
-            
-            <View style={styles.headerContainer}>
-                <Text style={styles.title}>Editar Perfil</Text>
+
+            {/* User photo and name */}
+            <View style={styles.profileContainer}>
+                <Image source={userPhoto} style={styles.profilePhoto} />
+                <Text style={styles.profileName}>{name || "Usuário"}</Text>
             </View>
 
-			{/* Campos de edição */}
-			<View style={styles.formContainer}>
-				<Text style={styles.label}>nome:</Text>
-				<TextInput
-					style={styles.input}
-					placeholder="Usuário"
-					placeholderTextColor="#a0aec0"
-					value={name}
-					onChangeText={setName}
-				/>
-				<Text style={styles.label}>e-mail:</Text>
-				<TextInput
-					style={styles.input}
-					placeholder="ex:exemplo@email.com"
-					placeholderTextColor="#a0aec0"
-					value={email}
-					onChangeText={setEmail}
+            {/* Campos de edição */}
+            <View style={styles.formContainer}>
+                <Text style={styles.label}>nome:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Usuário"
+                    placeholderTextColor="#a0aec0"
+                    value={name}
+                    onChangeText={setName}
+                />
+                <Text style={styles.label}>e-mail:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="ex:exemplo@email.com"
+                    placeholderTextColor="#a0aec0"
+                    value={email}
+                    onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
-				/>
-				<Text style={styles.label}>Telefone:</Text>
-				<TextInput
-					style={styles.input}
-					placeholder="(55)5555-5555"
-					placeholderTextColor="#a0aec0"
-					value={phone}
-					onChangeText={setPhone}
+                />
+                <Text style={styles.label}>Telefone:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="(55)5555-5555"
+                    placeholderTextColor="#a0aec0"
+                    value={phone}
+                    onChangeText={setPhone}
                     keyboardType="phone-pad"
-				/>
-				<TouchableOpacity style={styles.blueButton} onPress={handleSave}>
-					<Text style={styles.blueButtonText}>Salvar</Text>
-				</TouchableOpacity>
-			</View>
-      <BottomNav />
-		</View>
-	);
+                />
+                <TouchableOpacity style={styles.blueButton} onPress={handleChangePw}>
+                    <Text style={styles.blueButtonText}>Alterar senha</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.blueButton} onPress={handleSave}>
+                    <Text style={styles.blueButtonText}>Salvar</Text>
+                </TouchableOpacity>
+            </View>
+            <BottomNav />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -151,58 +162,65 @@ const styles = StyleSheet.create({
 	},
     backButton: {
         position: "absolute",
-        top: 60,
-        left: 30,
+        top: 20,
+        left: 20,
         zIndex: 1,
         padding: 4,
         backgroundColor: "rgba(0,0,0,0.3)",
         borderRadius: 20,
     },
-	backIcon: {
-		width: 40,
-        height: 40,
-	},
-	headerContainer: {
-		alignItems: 'center',
-		marginTop: 80,
-		marginBottom: 18,
-	},
-    title: {
-		color: '#fff',
-		fontSize: 29,
-		fontWeight: 'bold',
-		textAlign: 'center',
-		marginBottom: 10,
+    backIcon: {
+        width: 32,
+        height: 32,
     },
-	formContainer: {
-		marginTop: 30,
-		marginBottom: 30,
-	},
-	label: {
-		color: '#fff',
-		fontSize: 15,
-		marginBottom: 2,
-		marginLeft: 6,
-	},
-	input: {
-		backgroundColor: '#23344A',
-		color: '#fff',
-		borderRadius: 15,
-		paddingHorizontal: 16,
-		paddingVertical: 10,
-		fontSize: 15,
-		marginBottom: 15,
-	},
-	blueButton: {
-		backgroundColor: '#006494',
-		borderRadius: 20,
-		paddingVertical: 12,
-		alignItems: 'center',
-		marginTop: 10,
-	},
-	blueButtonText: {
-		color: '#fff',
-		fontWeight: 'bold',
-		fontSize: 16,
-	},
+    profileContainer: {
+        alignItems: 'center',
+        marginTop: 40,
+        marginBottom: 10,
+    },
+    profilePhoto: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: '#E8F1F2',
+        marginBottom: 10,
+    },
+    profileName: {
+        color: '#fff',
+        fontSize: 22,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    formContainer: {
+        marginTop: 10,
+        marginBottom: 30,
+    },
+    label: {
+        color: '#fff',
+        fontSize: 15,
+        marginBottom: 2,
+        marginLeft: 6,
+    },
+    input: {
+        backgroundColor: '#23344A',
+        color: '#fff',
+        borderRadius: 15,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        fontSize: 15,
+        marginBottom: 15,
+    },
+    blueButton: {
+        backgroundColor: '#006494',
+        borderRadius: 20,
+        paddingVertical: 12,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    blueButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
 });
