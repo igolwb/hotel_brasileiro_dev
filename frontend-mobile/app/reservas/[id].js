@@ -15,7 +15,7 @@ export default function QuartoDetalhe() {
     if (id) {
       const fetchQuarto = async () => {
         try {
-            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
+            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.105.81.163:3000";
             const token = await AsyncStorage.getItem("authToken");
             const response = await fetch(`${API_URL}/api/quartos/${id}`, {
                 headers: {
@@ -76,7 +76,7 @@ export default function QuartoDetalhe() {
         <Text style={styles.subtitulo}>{quarto.descricao}</Text>
 
         <Text style={styles.detalhesTitulo}>Detalhes</Text>
-        <Text style={styles.detalhe}>Preço: R$ {quarto.preco}</Text>
+        <Text style={styles.detalhe}>Preço: R$ {quarto.preco} por dia</Text>
         <Text style={styles.detalhe}>Quantidade disponível: {quarto.quantidade}</Text>
         
         <TouchableOpacity onPress={() => router.push({ pathname: '/reservas/reserva', params: { id: id } })} style={styles.botao}>

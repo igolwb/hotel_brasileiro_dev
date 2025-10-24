@@ -29,7 +29,7 @@ export default function ReservaPage() {
     if (id) {
       const fetchQuarto = async () => {
         try {
-          const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.0.106:3000';
+          const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.105.81.163:3000';
           const token = await AsyncStorage.getItem('authToken');
           const response = await fetch(`${API_URL}/api/quartos/${id}`, {
             headers: {
@@ -190,14 +190,23 @@ export default function ReservaPage() {
             />
 
             <Text style={styles.label}>Quantidade de pessoas</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Ex: 2"
-                placeholderTextColor="#999"
-                keyboardType="numeric"
-                value={guests}
-                onChangeText={setGuests}
-            />
+            <View style={styles.counterContainer}>
+                <TouchableOpacity
+                    style={styles.circleButton}
+                    onPress={() => setGuests((prev) => Math.max(1, Number(prev) - 1))}
+                >
+                    <Text style={styles.circleIcon}>-</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.counterValue}>{guests}</Text>
+
+                <TouchableOpacity
+                    style={styles.circleButton}
+                    onPress={() => setGuests((prev) => Math.min(10, Number(prev) + 1))}
+                >
+                    <Text style={styles.circleIcon}>+</Text>
+                </TouchableOpacity>
+            </View>
             
             {total > 0 && (
                 <Text style={styles.totalText}>
@@ -258,6 +267,41 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 15,
         fontSize: 16,
+    },
+    counterContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: "#006494",
+        borderRadius: 15,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        marginBottom: 20,
+        marginTop: 5,
+    },
+    circleButton: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        backgroundColor: "#006494",
+        borderWidth: 2,
+        borderColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    circleIcon: {
+        color: "#fff",
+        fontSize: 24,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginTop: -3.7,
+    },
+    counterValue: {
+        color: "#fff",
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+        minWidth: 40,
     },
     totalText: {
         color: '#fff',
