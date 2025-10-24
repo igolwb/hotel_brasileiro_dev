@@ -35,23 +35,26 @@ caso no mobile o "tsconfig.base" não seja gerado, crie um arquivo "tsconfig.bas
 }
 
 .env: 
-PORT=3000   
-#postgresql://hoteldb_owner:npg_7SjQXYmWk2Ad@ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon tech/hoteldb?sslmode=require   
-PGHOST='ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon.tech'  
-PGDATABASE='hoteldb'  
+PORT=3000
+#postgresql://hoteldb_owner:npg_7SjQXYmWk2Ad@ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon tech/hoteldb?sslmode=require
+PGHOST='ep-purple-lake-ac1gp7qj-pooler.sa-east-1.aws.neon.tech'
+PGDATABASE='hoteldb'
 PGUSER='hoteldb_owner' 
 PGPASSWORD='npg_7SjQXYmWk2Ad' 
 JWT_SECRET='4eceed3691fef88bfb7b6ad1'
 
-WEB_FRONT_PORT='http://192.168.0.106:3001'
+WEB_FRONT_PORT='http://192.168.0.106:3001' 
 WEB_BACK_PORT='http://192.168.0.106:3000'
 
 EXPO_PUBLIC_API_URL='http://192.168.0.106:3000'
 
-EMAIL_USER='igolwb@gmail.com'
+EMAIL_USER='igolwb@gmail.com' 
 EMAIL_PASS='pzeejieogmqvbfea'
 
-PAGSEGURO_SANDBOX_TOKEN=***
-PAGSEGURO_NOTIFICATION_URL=http://localhost:3000/api/payments/notifications
+PAGSEGURO_SANDBOX_TOKEN=
+PAGSEGURO_NOTIFICATION_URL=http://192.168.0.106:3000/api/payments/notifications
+
+GROQ_API_KEY=
+
 
 
