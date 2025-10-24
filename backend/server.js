@@ -9,11 +9,10 @@ import path from 'path';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import os from 'os'; // Import os module for dynamic IP detection
-
 import quartosRoutes from './routes/quartosRoutes.js';
 import clientesRoutes from './routes/clientesRoutes.js';
 import reservasRoutes from './routes/reservasRoutes.js';
-
+import payFlowRoutes from './routes/payFlowRoute.js';
 import { sql } from './config/db.js';
 
 // Load environment variables
@@ -35,7 +34,7 @@ const getLocalIP = () => {
 const app = express();
 const LOCAL_IP = getLocalIP();
 const WEB_FRONT_PORT = process.env.WEB_FRONT_PORT || `http://${LOCAL_IP}:3001`;
-const WEB_BACK_PORT = process.env.WEB_BACK_PORT || `http://10.105.75.25:3000`;
+const WEB_BACK_PORT = process.env.WEB_BACK_PORT || `http://192.168.0.106:3000`;
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middlewares
@@ -94,6 +93,7 @@ app.post('/api/login', async (req, res) => {
 app.use('/api/quartos', quartosRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/reservas', reservasRoutes);
+app.use('/api/payments', payFlowRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Initialize the database
@@ -107,7 +107,9 @@ async function startdb() {
         telefone VARCHAR(255) NOT NULL,
         senha VARCHAR(255) NOT NULL,
         role VARCHAR(50) DEFAULT 'cliente' :: character varying,
-        ft_perfil varchar(255)
+        ft_perfil varchar(255),
+        reset_token VARCHAR(4),
+        reset_token_expiration TIMESTAMP
       );
     `;
 

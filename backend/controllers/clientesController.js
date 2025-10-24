@@ -1,3 +1,5 @@
+
+import sendTokenEmail from '../nodemailer.js';
 import bcrypt from 'bcrypt';
 import { sql } from "../config/db.js";
 import jwt from 'jsonwebtoken';
@@ -120,33 +122,39 @@ export const buscarClienteId = async(req, res) => {
 
 // Atualiza os dados de um cliente pelo id, incluindo hash da nova senha se enviada
 export const atualizarCliente = async(req, res) => {
-    const { id } = req.params;
-    const { nome , email, telefone, senha } = req.body;
+  const { id } = req.params;
+  const { nome, email, telefone, senha } = req.body;
 
-    try {
-        let senhaAtualizada = senha;
-        if (senha) {
-            // Criptografa a senha se ela foi enviada
-            senhaAtualizada = await bcrypt.hash(senha, 10);
-        }
-        const clienteAtualizado = await sql `
-        UPDATE  clientes SET nome = ${nome}, email = ${email}, telefone = ${telefone}, senha = ${senhaAtualizada}
-        WHERE id = ${id} 
+  try {
+    let clienteAtualizado;
+    if (senha) {
+      // Criptografa a senha se ela foi enviada
+      const senhaHash = await bcrypt.hash(senha, 10);
+      clienteAtualizado = await sql`
+        UPDATE clientes SET nome = ${nome}, email = ${email}, telefone = ${telefone}, senha = ${senhaHash}
+        WHERE id = ${id}
         RETURNING *
-        `
-
-        if(clienteAtualizado.length === 0){
-            console.warn(`[PUT /clientes/${id}] Cliente não encontrado para atualização.`);
-            return res.status(404).json({success: false, message: 'Cliente não encontrado'})
-        }
-
-        console.log(`[PUT /clientes/${id}] Cliente atualizado:`, clienteAtualizado[0]);
-        res.status(200).json({ success: true, data: clienteAtualizado[0] });
-        
-    } catch (error) {
-        console.error(`[PUT /clientes/${id}] Erro na função atualizarCliente:`, error);
-        res.status(500).json({ success: false, message: 'Erro interno no servidor' });
+      `;
+    } else {
+      clienteAtualizado = await sql`
+        UPDATE clientes SET nome = ${nome}, email = ${email}, telefone = ${telefone}
+        WHERE id = ${id}
+        RETURNING *
+      `;
     }
+
+    if (clienteAtualizado.length === 0) {
+      console.warn(`[PUT /clientes/${id}] Cliente não encontrado para atualização.`);
+      return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
+    }
+
+    console.log(`[PUT /clientes/${id}] Cliente atualizado:`, clienteAtualizado[0]);
+    res.status(200).json({ success: true, data: clienteAtualizado[0] });
+
+  } catch (error) {
+    console.error(`[PUT /clientes/${id}] Erro na função atualizarCliente:`, error);
+    res.status(500).json({ success: false, message: 'Erro interno no servidor' });
+  }
 };
 
 // Deleta um cliente do banco de dados pelo id fornecido
@@ -192,5 +200,84 @@ export const buscarClienteMe = async (req, res) => {
   } catch (error) {
     console.error('[GET /clientes/me] Erro:', error);
     res.status(500).json({ success: false, message: 'Erro interno no servidor' });
+  }
+};
+
+// Gera e envia token de recuperação de senha para o email do usuário
+export const enviarTokenRecuperacao = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Email é obrigatório.' });
+  }
+  try {
+    const [user] = await sql`SELECT * FROM clientes WHERE email = ${email}`;
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Email não encontrado.' });
+    }
+    // Gerar token seguro de 4 caracteres (A-Z, 0-9)
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let token = '';
+    for (let i = 0; i < 4; i++) {
+      token += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    // Definir expiração para 1 hora a partir de agora
+    const expiration = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+    // Salvar token e expiração no banco
+    await sql`
+      UPDATE clientes SET reset_token = ${token}, reset_token_expiration = ${expiration}
+      WHERE id = ${user.id}
+    `;
+    // Enviar email
+    await sendTokenEmail(email, token);
+    return res.status(200).json({ success: true, message: 'Token enviado para o email.' });
+  } catch (error) {
+    console.error('[POST /clientes/send-token] Erro ao enviar token:', error);
+    return res.status(500).json({ success: false, message: 'Erro ao enviar token.' });
+  }
+};
+
+// Verifica o token de recuperação de senha
+export const verificarTokenRecuperacao = async (req, res) => {
+  const { email, token } = req.body;
+  if (!email || !token) {
+    return res.status(400).json({ success: false, message: 'Email e token são obrigatórios.' });
+  }
+  try {
+    const [user] = await sql`SELECT reset_token, reset_token_expiration FROM clientes WHERE email = ${email}`;
+    if (!user || !user.reset_token || !user.reset_token_expiration) {
+      return res.status(404).json({ success: false, message: 'Token não encontrado.' });
+    }
+    const now = new Date();
+    const expiration = new Date(user.reset_token_expiration);
+    if (user.reset_token !== token) {
+      return res.status(401).json({ success: false, message: 'Código inválido.' });
+    }
+    if (now > expiration) {
+      return res.status(401).json({ success: false, message: 'Código expirado. Solicite um novo.' });
+    }
+    return res.status(200).json({ success: true, message: 'Código válido.' });
+  } catch (error) {
+    console.error('[POST /clientes/send-token-verify] Erro ao verificar token:', error);
+    return res.status(500).json({ success: false, message: 'Erro ao verificar token.' });
+  }
+};
+
+// Redefinir senha usando email
+export const redefinirSenhaPorEmail = async (req, res) => {
+  const { email, senha } = req.body;
+  if (!email || !senha) {
+    return res.status(400).json({ success: false, message: 'Email e nova senha são obrigatórios.' });
+  }
+  try {
+    const [user] = await sql`SELECT id FROM clientes WHERE email = ${email}`;
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Usuário não encontrado.' });
+    }
+    const senhaHash = await bcrypt.hash(senha, 10);
+    await sql`UPDATE clientes SET senha = ${senhaHash}, reset_token = NULL, reset_token_expiration = NULL WHERE id = ${user.id}`;
+    return res.status(200).json({ success: true, message: 'Senha redefinida com sucesso.' });
+  } catch (err) {
+    console.error('[POST /clientes/update-password] Erro ao redefinir senha:', err);
+    return res.status(500).json({ success: false, message: 'Erro ao redefinir senha.' });
   }
 };
