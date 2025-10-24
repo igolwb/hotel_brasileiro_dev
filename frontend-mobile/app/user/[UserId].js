@@ -9,21 +9,32 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const ProfileScreen = () => {
   const { UserId } = useLocalSearchParams();
   const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState('Usuário');
 
-    useEffect(() => {
-      const fetchUserId = async () => {
-        try {
-          const id = await AsyncStorage.getItem("UserId");
-          if (id) {
-            setUserId(id);
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        const id = await AsyncStorage.getItem("UserId");
+        setUserId(id);
+        if (token) {
+          const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
+          const response = await fetch(`${API_URL}/api/clientes/me`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const data = await response.json();
+          if (data && data.success && data.data && data.data.nome) {
+            setUserName(data.data.nome);
           }
-        } catch (error) {
-          console.error("Failed to fetch user ID:", error);
         }
-      };
-  
-      fetchUserId();
-    }, []);
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+    fetchUserInfo();
+  }, []);
 
   const router = useRouter();
 
@@ -31,7 +42,7 @@ const ProfileScreen = () => {
   const signOut = async () => {
     try {
       await AsyncStorage.multiRemove(["authToken", "UserId"]);
-      router.replace("/(tabs)/index");
+      router.replace("/");
     } catch (error) {
       console.error("Erro ao sair da conta:", error);
     }
@@ -51,7 +62,7 @@ const ProfileScreen = () => {
           source={require('../../assets/images/user_pfp.png')} // Placeholder for profile image
           style={styles.profileImage}
         />
-        <Text style={styles.username}>{UserId}</Text>
+        <Text style={styles.username}>{userName}</Text>
       </View>
 
       {/* Options Section */}

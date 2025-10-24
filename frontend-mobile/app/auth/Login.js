@@ -11,8 +11,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from "jwt-decode"; // Correct import for jwt-decode
+import handleLogin from "../../services/handleLogin";
 
 // Componente principal da tela de login
 export default function Login() {
@@ -24,55 +23,9 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
-    // Função para tratar o envio do formulário de login
-    const handleLogin = async () => {
-        setErrorMsg("");
-        setLoading(true);
-        try {
-            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
-            const response = await fetch(`${API_URL}/api/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, senha })
-            });
-
-            const data = await response.json();
-            console.log("Backend Response:", data); // Debugging
-
-            if (data.success && data.token) {
-                await AsyncStorage.setItem('authToken', data.token);
-                console.log("Token stored successfully");
-
-const decodeToken = (token) => {
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split("")
-      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-      .join("")
-  );
-  return JSON.parse(jsonPayload);
-};
-
-// Replace jwt_decode with decodeToken
-const decodedToken = decodeToken(data.token);
-console.log("Decoded Token:", decodedToken);
-await AsyncStorage.setItem('UserId', decodedToken.id.toString());
-
-                router.push("/home/home"); // Redirect to home for all users
-            } else {
-                setErrorMsg("Credenciais inválidas ou resposta inesperada.");
-            }
-        } catch (error) {
-            console.error("Login Error:", error);
-            setErrorMsg("Erro ao realizar login. Tente novamente.");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const handleLoginPress = () => {
+  handleLogin(email, senha, setErrorMsg, setLoading, router);
+  };
 
     return (
         <View style={{ flex: 1 }}>
@@ -163,7 +116,7 @@ await AsyncStorage.setItem('UserId', decodedToken.id.toString());
 
                 {/* Botão para entrar na home */}
                 <TouchableOpacity
-                    onPress={handleLogin}
+                    onPress={handleLoginPress}
                     style={styles.button}
                     disabled={loading}
                 >

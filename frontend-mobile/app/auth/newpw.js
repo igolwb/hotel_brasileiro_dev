@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEmailStore } from "../../services/emailStore";
 import {
     View,
     Text,
@@ -18,6 +19,48 @@ export default function Login() {
     const [senha, setSenha] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
     const router = useRouter();
+    const email = useEmailStore((state) => state.email);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleUpdatePassword = async () => {
+        setError("");
+        if (!senha || !confirmarSenha) {
+            setError("Preencha todos os campos.");
+            return;
+        }
+        if (senha !== confirmarSenha) {
+            setError("As senhas não coincidem.");
+            return;
+        }
+        setLoading(true);
+        try {
+            // Debug log: show email and senha being sent
+            console.log("Enviando para backend:", { email, senha });
+            const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.106:3000";
+            const response = await fetch(`${API_URL}/api/clientes/update-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, senha }),
+            });
+            const data = await response.json();
+            // Debug log: show backend response
+            console.log("Resposta do backend:", data);
+            if (response.ok && data.success) {
+                setError("Senha redefinida com sucesso.");
+                // Navegar para home após sucesso
+                setTimeout(() => {
+                    router.push("/");
+                }, 1200);
+            } else {
+                setError(data.message || "Erro ao redefinir senha.");
+            }
+        } catch (_err) {
+            setError("Erro de conexão. Tente novamente.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -81,6 +124,11 @@ export default function Login() {
                             secureTextEntry
                         />
                     </View>
+                    {error ? (
+                        <Text style={{ color: "red", textAlign: "center", marginVertical: 8 }}>
+                            {error}
+                        </Text>
+                    ) : null}
                 </View>
 
                 {/* Botão para recuperar senha */}
@@ -88,15 +136,16 @@ export default function Login() {
                     onPress={() => router.push("/auth/RecuperarSenha")}
                     style={styles.sa}
                 >
-                    
+                    {/* ... */}
                 </TouchableOpacity>
 
-                {/* Botão para entrar na home */}
+                {/* Botão para redefinir senha */}
                 <TouchableOpacity
-                    onPress={() => router.push("/auth/TelaInicial")}
+                    onPress={handleUpdatePassword}
                     style={styles.button}
+                    disabled={loading}
                 >
-                    <Text style={styles.buttonText}>Redefinir Senha</Text>
+                    <Text style={styles.buttonText}>{loading ? "Redefinindo..." : "Redefinir Senha"}</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>

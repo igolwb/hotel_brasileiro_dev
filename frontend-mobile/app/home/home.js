@@ -63,7 +63,7 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, []);
 
-  console.log("Rooms fetched:", rooms.map(room => room.id)); // IDEIA!!!! preciso do id do quarto p fazer a navegação
+  console.log("Rooms fetched:", rooms.map(room => room.id));
 
 
   // Static data for encounters

@@ -25,6 +25,7 @@ export default function Cadastro() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+      const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   // Regex para validação de email e telefone
@@ -82,6 +83,18 @@ export default function Cadastro() {
     setShowPasswordRequirements(false);
   };
 
+const decodeToken = (token) => {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+        atob(base64)
+            .split("")
+            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .join("")
+    );
+    return JSON.parse(jsonPayload);
+};
+
   // Envia o formulário para criar um novo cliente
 const handleSubmit = async () => {
     setError("");
@@ -126,6 +139,13 @@ const handleSubmit = async () => {
         if (data.success && data.token) {
             await AsyncStorage.setItem('authToken', data.token);
             console.log("Token stored successfully");
+            // Decode token and store UserId and UserName
+            const decodedToken = decodeToken(data.token);
+            console.log("Decoded Token:", decodedToken);
+            await AsyncStorage.setItem('UserId', decodedToken.id.toString());
+            if (decodedToken.nome) {
+                await AsyncStorage.setItem('UserName', decodedToken.nome.toString());
+            }
             setSuccess("Cadastro realizado com sucesso!");
             setTimeout(() => router.push("/home/home"), 1500);
         } else {
@@ -138,6 +158,7 @@ const handleSubmit = async () => {
         setLoading(false);
     }
 };
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -236,8 +257,18 @@ const handleSubmit = async () => {
               placeholderTextColor="#000"
               value={senha}
               onChangeText={handleSenhaChange}
-              secureTextEntry
+              secureTextEntry={!showPassword}
             />
+                        <TouchableOpacity
+                            onPress={() => setShowPassword((prev) => !prev)}
+                            style={{ marginLeft: 8 }}
+                        >
+                            <MaterialIcons
+                                name={showPassword ? "visibility-off" : "visibility"}
+                                size={20}
+                                color="#000"
+                            />
+                        </TouchableOpacity>
           </View>
 
           {/* Campo Confirme a Senha */}
@@ -255,8 +286,18 @@ const handleSubmit = async () => {
               placeholderTextColor="#000"
               value={confirmSenha}
               onChangeText={handleConfirmSenhaChange}
-              secureTextEntry
+              secureTextEntry={!showPassword}
             />
+                        <TouchableOpacity
+                            onPress={() => setShowPassword((prev) => !prev)}
+                            style={{ marginLeft: 8 }}
+                        >
+                            <MaterialIcons
+                                name={showPassword ? "visibility-off" : "visibility"}
+                                size={20}
+                                color="#000"
+                            />
+                        </TouchableOpacity>
           </View>
 
           {/* Lista de requisitos da senha só após submit */}
