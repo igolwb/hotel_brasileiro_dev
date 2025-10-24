@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-const URL = 'http://localhost:3000'; // Ajuste para o endpoint da sua API
+const URL = 'http://192.168.0.106:3000'; // Ajuste para o endpoint da sua API
 
 const useApiStore = create((set) => ({
   clientes: [],
